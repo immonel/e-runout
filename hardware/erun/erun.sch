@@ -1,5 +1,4 @@
 EESchema Schematic File Version 4
-LIBS:erun-cache
 EELAYER 30 0
 EELAYER END
 $Descr A2 23386 16535
@@ -55,17 +54,6 @@ F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/21700D.pdf" H 18000 10450 5
 	1    17200 10550
 	-1   0    0    1   
 $EndComp
-$Comp
-L Logic_LevelTranslator:TXB0108DQSR U?
-U 1 1 618C6CB9
-P 13550 3200
-F 0 "U?" H 13550 2411 50  0000 C CNN
-F 1 "TXB0108DQSR" H 13550 2320 50  0000 C CNN
-F 2 "Package_SON:USON-20_2x4mm_P0.4mm" H 13550 2450 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/txb0108.pdf" H 13550 3100 50  0001 C CNN
-	1    13550 3200
-	-1   0    0    1   
-$EndComp
 Text Label 16300 10450 2    50   ~ 0
 CS_HV
 Text Label 16300 10550 2    50   ~ 0
@@ -90,115 +78,54 @@ Wire Wire Line
 	13150 3400 12750 3400
 Wire Wire Line
 	13150 3300 12750 3300
-Text Label 12900 2800 2    50   ~ 0
-S1_A1_HV
-Wire Wire Line
-	13150 2800 12900 2800
 Text Label 12900 2900 2    50   ~ 0
-S1_B_HV
+S1_A1_HV
 Wire Wire Line
 	13150 2900 12900 2900
-Text Label 12900 3000 2    50   ~ 0
+Wire Wire Line
+	9300 2450 9550 2450
+Text Label 9550 2450 0    50   ~ 0
 S1_A0_HV
 Wire Wire Line
-	13150 3000 12900 3000
-$Comp
-L Connector:DB15_Female_MountingHoles J?
-U 1 1 61970C5D
-P 3050 4400
-F 0 "J?" H 3205 4402 50  0000 L CNN
-F 1 "DB15_Female_MountingHoles" H 3205 4311 50  0000 L CNN
-F 2 "" H 3050 4400 50  0001 C CNN
-F 3 " ~" H 3050 4400 50  0001 C CNN
-	1    3050 4400
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	10100 7500 10350 7500
-Text Label 10350 7500 0    50   ~ 0
-S1_A0_HV
-Wire Wire Line
-	10050 8350 10300 8350
-Text Label 10300 8350 0    50   ~ 0
+	9250 3300 9500 3300
+Text Label 9500 3300 0    50   ~ 0
 S1_B_HV
 Wire Wire Line
-	10100 9350 10350 9350
-Text Label 10350 9350 0    50   ~ 0
+	9300 4300 9550 4300
+Text Label 9550 4300 0    50   ~ 0
 S1_A1_HV
 Wire Wire Line
-	9150 10450 8900 10450
+	8250 3400 8000 3400
 Wire Wire Line
-	8900 10250 9150 10250
-Text Label 8900 10450 2    50   ~ 0
-S1_AS_HV+
-Text Label 8900 10250 2    50   ~ 0
-S1_AS_HV-
-Wire Wire Line
-	9100 9450 8850 9450
-Wire Wire Line
-	8850 9250 9100 9250
-Text Label 8850 9450 2    50   ~ 0
-S1_A0_HV+
-Text Label 8850 9250 2    50   ~ 0
-S1_A0_HV-
-Wire Wire Line
-	9050 8450 8800 8450
-Wire Wire Line
-	8800 8250 9050 8250
-Text Label 8800 8450 2    50   ~ 0
+	8000 3200 8250 3200
+Text Label 8000 3400 2    50   ~ 0
 S1_B_HV+
-Text Label 8800 8250 2    50   ~ 0
+Text Label 8000 3200 2    50   ~ 0
 S1_B_HV-
 Wire Wire Line
-	9100 7600 8850 7600
-Wire Wire Line
-	8850 7400 9100 7400
-Text Label 8850 7600 2    50   ~ 0
+	8300 2550 8050 2550
+Text Label 8050 2550 2    50   ~ 0
 S1_A1_HV+
-Text Label 8850 7400 2    50   ~ 0
-S1_A1_HV-
-$Comp
-L Interface_LineDriver:MC3486N U?
-U 4 1 618C2441
-P 9650 10350
-F 0 "U?" H 10194 10396 50  0000 L CNN
-F 1 "MC3486N" H 10194 10305 50  0000 L CNN
-F 2 "Package_DIP:DIP-14_W7.62mm" H 9650 9950 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/mc3486.pdf" H 9650 10350 50  0001 C CNN
-	4    9650 10350
-	1    0    0    -1  
-$EndComp
 $Comp
 L Interface_LineDriver:MC3486N U?
 U 3 1 618C0C51
-P 9600 9350
-F 0 "U?" H 10144 9396 50  0000 L CNN
-F 1 "MC3486N" H 10144 9305 50  0000 L CNN
-F 2 "Package_DIP:DIP-14_W7.62mm" H 9600 8950 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/mc3486.pdf" H 9600 9350 50  0001 C CNN
-	3    9600 9350
+P 8800 4300
+F 0 "U?" H 9344 4346 50  0000 L CNN
+F 1 "MC3486N" H 9344 4255 50  0000 L CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 8800 3900 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/mc3486.pdf" H 8800 4300 50  0001 C CNN
+	3    8800 4300
 	1    0    0    -1  
 $EndComp
 $Comp
 L Interface_LineDriver:MC3486N U?
 U 2 1 618BF9C9
-P 9550 8350
-F 0 "U?" H 10094 8396 50  0000 L CNN
-F 1 "MC3486N" H 10094 8305 50  0000 L CNN
-F 2 "Package_DIP:DIP-14_W7.62mm" H 9550 7950 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/mc3486.pdf" H 9550 8350 50  0001 C CNN
-	2    9550 8350
-	1    0    0    -1  
-$EndComp
-$Comp
-L Interface_LineDriver:MC3486N U?
-U 1 1 618BDA93
-P 9600 7500
-F 0 "U?" H 10144 7546 50  0000 L CNN
-F 1 "MC3486N" H 10144 7455 50  0000 L CNN
-F 2 "Package_DIP:DIP-14_W7.62mm" H 9600 7100 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/mc3486.pdf" H 9600 7500 50  0001 C CNN
-	1    9600 7500
+P 8750 3300
+F 0 "U?" H 9294 3346 50  0000 L CNN
+F 1 "MC3486N" H 9294 3255 50  0000 L CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 8750 2900 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/mc3486.pdf" H 8750 3300 50  0001 C CNN
+	2    8750 3300
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -266,11 +193,11 @@ Wire Wire Line
 Wire Wire Line
 	14250 2200 14250 2350
 Text Label 14350 3500 0    50   ~ 0
-CS_HV
+CLK_LV
 Text Label 14350 3400 0    50   ~ 0
-DOUT_HV
+DOUT_LV
 Text Label 14350 3300 0    50   ~ 0
-CLK_HV
+CS_LV
 Wire Wire Line
 	14350 3300 13950 3300
 Wire Wire Line
@@ -281,16 +208,16 @@ Text Label 14350 3600 0    50   ~ 0
 LLC_OE
 Wire Wire Line
 	14350 3600 13950 3600
-Text Label 14300 3000 0    50   ~ 0
-S1_A1
 Text Label 14300 2900 0    50   ~ 0
-S1_B
+S1_A1_LV
+Text Label 14300 3000 0    50   ~ 0
+S1_B_LV
 Text Label 14300 2800 0    50   ~ 0
-S1_A0
+S1_A0_LV
 Wire Wire Line
-	13950 2900 14300 2900
+	13950 3000 14300 3000
 Wire Wire Line
-	14300 3000 13950 3000
+	14300 2900 13950 2900
 Wire Wire Line
 	13950 2800 14300 2800
 Wire Wire Line
@@ -366,18 +293,16 @@ Wire Wire Line
 $Comp
 L power:GND #PWR?
 U 1 1 619B8330
-P 18400 3850
-F 0 "#PWR?" H 18400 3600 50  0001 C CNN
-F 1 "GND" H 18405 3677 50  0000 C CNN
-F 2 "" H 18400 3850 50  0001 C CNN
-F 3 "" H 18400 3850 50  0001 C CNN
-	1    18400 3850
+P 17700 3850
+F 0 "#PWR?" H 17700 3600 50  0001 C CNN
+F 1 "GND" H 17705 3677 50  0000 C CNN
+F 2 "" H 17700 3850 50  0001 C CNN
+F 3 "" H 17700 3850 50  0001 C CNN
+	1    17700 3850
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	18750 3650 18400 3650
-Wire Wire Line
-	18400 3650 18400 3850
+	17700 3650 17700 3850
 Wire Wire Line
 	17950 9950 17300 9950
 Wire Notes Line
@@ -390,7 +315,7 @@ Wire Notes Line
 	14550 7850 19350 7850
 Text Notes 14600 7750 0    50   ~ 0
 ADC
-Text Notes 8350 6950 0    50   ~ 0
+Text Notes 7550 1900 0    50   ~ 0
 DIFFERENTIAL CONVERTER\n
 Text Notes 2500 3000 0    50   ~ 0
 CONNECTORS\n
@@ -405,98 +330,75 @@ F 3 " ~" H 3050 9400 50  0001 C CNN
 	1    3050 9400
 	1    0    0    -1  
 $EndComp
-Text Label 9900 7800 0    50   ~ 0
+Text Label 9100 2750 0    50   ~ 0
 HV_REF
 Wire Wire Line
-	9600 7800 9900 7800
-Text Label 9850 8650 0    50   ~ 0
+	8800 2750 9100 2750
+Text Label 9050 3600 0    50   ~ 0
 HV_REF
 Wire Wire Line
-	9550 8650 9850 8650
-Text Label 9900 9650 0    50   ~ 0
+	8750 3600 9050 3600
+Text Label 9100 4600 0    50   ~ 0
 HV_REF
 Wire Wire Line
-	9600 9650 9900 9650
-Text Label 9950 10650 0    50   ~ 0
-HV_REF
-Wire Wire Line
-	9650 10650 9950 10650
+	8800 4600 9100 4600
 $Comp
 L power:GND #PWR?
 U 1 1 619ED40F
-P 9000 7950
-F 0 "#PWR?" H 9000 7700 50  0001 C CNN
-F 1 "GND" H 9005 7777 50  0000 C CNN
-F 2 "" H 9000 7950 50  0001 C CNN
-F 3 "" H 9000 7950 50  0001 C CNN
-	1    9000 7950
+P 8200 2900
+F 0 "#PWR?" H 8200 2650 50  0001 C CNN
+F 1 "GND" H 8205 2727 50  0000 C CNN
+F 2 "" H 8200 2900 50  0001 C CNN
+F 3 "" H 8200 2900 50  0001 C CNN
+	1    8200 2900
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	9000 7800 9000 7950
+	8200 2750 8200 2900
 Wire Wire Line
-	9500 7800 9000 7800
+	8700 2750 8200 2750
 $Comp
 L power:GND #PWR?
 U 1 1 619F196B
-P 9150 8800
-F 0 "#PWR?" H 9150 8550 50  0001 C CNN
-F 1 "GND" H 9155 8627 50  0000 C CNN
-F 2 "" H 9150 8800 50  0001 C CNN
-F 3 "" H 9150 8800 50  0001 C CNN
-	1    9150 8800
+P 8350 3750
+F 0 "#PWR?" H 8350 3500 50  0001 C CNN
+F 1 "GND" H 8355 3577 50  0000 C CNN
+F 2 "" H 8350 3750 50  0001 C CNN
+F 3 "" H 8350 3750 50  0001 C CNN
+	1    8350 3750
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	9150 8650 9150 8800
+	8350 3600 8350 3750
 $Comp
 L power:GND #PWR?
 U 1 1 619F2EB7
-P 9300 9800
-F 0 "#PWR?" H 9300 9550 50  0001 C CNN
-F 1 "GND" H 9305 9627 50  0000 C CNN
-F 2 "" H 9300 9800 50  0001 C CNN
-F 3 "" H 9300 9800 50  0001 C CNN
-	1    9300 9800
+P 8500 4750
+F 0 "#PWR?" H 8500 4500 50  0001 C CNN
+F 1 "GND" H 8505 4577 50  0000 C CNN
+F 2 "" H 8500 4750 50  0001 C CNN
+F 3 "" H 8500 4750 50  0001 C CNN
+	1    8500 4750
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	9300 9650 9300 9800
-$Comp
-L power:GND #PWR?
-U 1 1 619F43A3
-P 9300 10800
-F 0 "#PWR?" H 9300 10550 50  0001 C CNN
-F 1 "GND" H 9305 10627 50  0000 C CNN
-F 2 "" H 9300 10800 50  0001 C CNN
-F 3 "" H 9300 10800 50  0001 C CNN
-	1    9300 10800
-	1    0    0    -1  
-$EndComp
+	8500 4600 8500 4750
 Wire Wire Line
-	9300 10650 9300 10800
+	8500 4600 8700 4600
 Wire Wire Line
-	9550 10650 9300 10650
-Wire Wire Line
-	9300 9650 9500 9650
-Wire Wire Line
-	9450 8650 9150 8650
-Text Label 9750 8050 0    50   ~ 0
+	8650 3600 8350 3600
+Text Label 8950 3000 0    50   ~ 0
 HV_REF
 Wire Wire Line
-	9750 8050 9450 8050
-Text Label 9750 7200 0    50   ~ 0
+	8950 3000 8650 3000
+Text Label 8950 2150 0    50   ~ 0
 HV_REF
 Wire Wire Line
-	9500 7200 9750 7200
-Text Label 9850 9050 0    50   ~ 0
+	8700 2150 8950 2150
+Text Label 9050 4000 0    50   ~ 0
 HV_REF
 Wire Wire Line
-	9850 9050 9500 9050
-Text Label 9850 10050 0    50   ~ 0
-HV_REF
-Wire Wire Line
-	9850 10050 9550 10050
+	9050 4000 8700 4000
 $Comp
 L Connector:DB9_Male_MountingHoles J?
 U 1 1 61A09E27
@@ -538,4 +440,188 @@ Wire Wire Line
 	2750 10600 2750 10950
 Wire Wire Line
 	2850 10950 2850 10600
+Wire Wire Line
+	8050 2350 8300 2350
+Text Label 8050 2350 2    50   ~ 0
+S1_A1_HV-
+$Comp
+L Interface_LineDriver:MC3486N U?
+U 1 1 618BDA93
+P 8800 2450
+F 0 "U?" H 9344 2496 50  0000 L CNN
+F 1 "MC3486N" H 9344 2405 50  0000 L CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 8800 2050 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/mc3486.pdf" H 8800 2450 50  0001 C CNN
+	1    8800 2450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3650 3850 3650 4100
+Text Label 3650 3850 1    50   ~ 0
+S1_A1_HV-
+Wire Wire Line
+	3750 4100 3750 3850
+Text Label 3750 3850 1    50   ~ 0
+S1_A1_HV+
+Wire Wire Line
+	3350 4100 3350 3850
+Wire Wire Line
+	3250 3850 3250 4100
+Text Label 3350 3850 1    50   ~ 0
+S1_B_HV+
+Text Label 8050 4200 2    50   ~ 0
+S1_A0_HV-
+Text Label 8050 4400 2    50   ~ 0
+S1_A0_HV+
+Wire Wire Line
+	8050 4200 8300 4200
+Wire Wire Line
+	8300 4400 8050 4400
+Text Label 2550 3850 1    50   ~ 0
+S1_A0_HV-
+Text Label 2650 3850 1    50   ~ 0
+S1_A0_HV+
+Wire Wire Line
+	2550 3850 2550 4100
+Wire Wire Line
+	2650 4100 2650 3850
+Text Label 2850 3850 1    50   ~ 0
+S1_AS_HV
+Wire Wire Line
+	2850 3850 2850 4100
+$Comp
+L power:GND #PWR?
+U 1 1 619E3C39
+P 4100 4250
+F 0 "#PWR?" H 4100 4000 50  0001 C CNN
+F 1 "GND" H 4105 4077 50  0000 C CNN
+F 2 "" H 4100 4250 50  0001 C CNN
+F 3 "" H 4100 4250 50  0001 C CNN
+	1    4100 4250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3550 4100 3550 3350
+Wire Wire Line
+	3550 3350 4100 3350
+Wire Wire Line
+	4100 3350 4100 4250
+$Comp
+L Connector:DB15_Female_MountingHoles J?
+U 1 1 61970C5D
+P 3050 4400
+F 0 "J?" H 3205 4402 50  0000 L CNN
+F 1 "DB15_Female_MountingHoles" H 3205 4311 50  0000 L CNN
+F 2 "" H 3050 4400 50  0001 C CNN
+F 3 " ~" H 3050 4400 50  0001 C CNN
+	1    3050 4400
+	0    1    1    0   
+$EndComp
+Text Label 3150 3850 1    50   ~ 0
+HV_REF
+Text Label 3250 3850 1    50   ~ 0
+S1_B_HV-
+Wire Wire Line
+	3150 3850 3150 4100
+Text Label 18400 3150 2    50   ~ 0
+CS_LV
+Wire Wire Line
+	18400 3150 18750 3150
+Wire Wire Line
+	17700 3650 18750 3650
+Text Label 18400 3950 2    50   ~ 0
+CLK_LV
+Wire Wire Line
+	18400 3950 18750 3950
+Text Label 18400 3350 2    50   ~ 0
+DOUT_LV
+Wire Wire Line
+	18400 3350 18750 3350
+Wire Wire Line
+	13150 3000 12900 3000
+Text Label 12900 3000 2    50   ~ 0
+S1_B_HV
+Wire Wire Line
+	13150 2800 12900 2800
+Text Label 12900 2800 2    50   ~ 0
+S1_A0_HV
+$Comp
+L Logic_LevelTranslator:TXB0108DQSR U?
+U 1 1 618C6CB9
+P 13550 3200
+F 0 "U?" H 13550 2411 50  0000 C CNN
+F 1 "TXB0108DQSR" H 13550 2320 50  0000 C CNN
+F 2 "Package_SON:USON-20_2x4mm_P0.4mm" H 13550 2450 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/txb0108.pdf" H 13550 3100 50  0001 C CNN
+	1    13550 3200
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	12900 3100 13150 3100
+Text Label 14300 3100 0    50   ~ 0
+S1_AS_LV
+Wire Wire Line
+	13950 3100 14300 3100
+Text Label 12900 3100 2    50   ~ 0
+S1_AS_HV
+Text Label 18400 2450 2    50   ~ 0
+S1_B_LV
+Text Label 18400 2250 2    50   ~ 0
+S1_A0_LV
+Wire Wire Line
+	18750 2250 18400 2250
+Wire Wire Line
+	18400 2350 18750 2350
+Wire Wire Line
+	18750 2450 18400 2450
+Text Label 18400 2350 2    50   ~ 0
+S1_A1_LV
+Wire Wire Line
+	18750 2550 18400 2550
+Text Label 18400 2550 2    50   ~ 0
+S1_AS_LV
+Wire Wire Line
+	9050 5000 8750 5000
+Text Label 9050 5000 0    50   ~ 0
+HV_REF
+Wire Wire Line
+	8750 5600 8500 5600
+Wire Wire Line
+	8500 5600 8500 5750
+$Comp
+L power:GND #PWR?
+U 1 1 619F43A3
+P 8500 5750
+F 0 "#PWR?" H 8500 5500 50  0001 C CNN
+F 1 "GND" H 8505 5577 50  0000 C CNN
+F 2 "" H 8500 5750 50  0001 C CNN
+F 3 "" H 8500 5750 50  0001 C CNN
+	1    8500 5750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8850 5600 9150 5600
+Text Label 9150 5600 0    50   ~ 0
+HV_REF
+$Comp
+L Interface_LineDriver:MC3486N U?
+U 4 1 618C2441
+P 8850 5300
+F 0 "U?" H 9394 5346 50  0000 L CNN
+F 1 "MC3486N" H 9394 5255 50  0000 L CNN
+F 2 "Package_DIP:DIP-14_W7.62mm" H 8850 4900 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/mc3486.pdf" H 8850 5300 50  0001 C CNN
+	4    8850 5300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8350 5400 8100 5400
+Wire Wire Line
+	8100 5200 8350 5200
+Text Label 8100 5400 2    50   ~ 0
+S1_AS_HV+
+Text Label 8100 5200 2    50   ~ 0
+S1_AS_HV-
+Text Notes 12450 1900 0    50   ~ 0
+VOLTAGE-LEVEL SHIFTER
 $EndSCHEMATC

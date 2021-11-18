@@ -531,9 +531,9 @@ F 3 " ~" H 3100 6700 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Text Label 2750 10600 1    50   ~ 0
-TRIGOUT1+
+TRIGOUT1_HV+
 Text Label 2850 10600 1    50   ~ 0
-TRIGOUT1-
+TRIGOUT1_HV-
 Wire Wire Line
 	2750 10600 2750 10950
 Wire Wire Line
