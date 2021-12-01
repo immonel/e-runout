@@ -559,7 +559,7 @@ Wire Wire Line
 Wire Wire Line
 	7650 10850 8050 10850
 Text Label 8050 10950 0    50   ~ 0
-LLC_OE
+HV_REF
 Wire Wire Line
 	8050 10950 7650 10950
 Wire Notes Line
@@ -720,4 +720,8 @@ Wire Wire Line
 	1850 10750 1650 10750
 Text Label 1850 10750 0    50   ~ 0
 ADC_IN5V
+Text Label 8800 5800 0    50   ~ 0
+HV_REF
+Wire Wire Line
+	8800 5800 8450 5800
 $EndSCHEMATC
