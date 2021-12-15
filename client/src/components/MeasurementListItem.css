@@ -1,0 +1,15 @@
+.measurement-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-group-item.active {
+  background-color: #eeeeee;
+  border-color: lightgray;
+  color: black;
+}
+
+.text-details {
+  color: darkgray;
+}

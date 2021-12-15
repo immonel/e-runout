@@ -1,0 +1,33 @@
+.status-buttons {
+  float: right;
+  vertical-align: middle;
+}
+
+.device-status {
+  margin-bottom: 2em;
+}
+
+.status-button {
+  display: flex;
+  align-items: center;
+}
+
+.status-button > svg {
+  margin-right: 10px;
+}
+
+.table > tbody > tr > td {
+  vertical-align: middle;
+}
+
+/* .setting-input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.checkbox {
+  margin-left: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+} */
