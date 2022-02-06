@@ -1,19 +1,54 @@
+const SerialPort = require('serialport')
+const Readline = SerialPort.parsers.Readline
+const serial = new SerialPort('/dev/ttyACM0')
+const parser = new Readline()
+serial.pipe(parser)
+
+const connectionInterval = 5000
+const statusInterval = 50
+let connectionIntervalID
+let statusIntervalID
+
+const log = (data) => console.log('[teensy]', data)
+
+serial.on('open', () => {
+  status.connected = true
+  clearInterval(connectionIntervalID)
+  console.log('Serial port connection established for teensy')
+})
+serial.on('close', () => {
+  status.connected = false
+  console.log('Serial port connection lost for teensy')
+  reconnect()
+})
+serial.on('error', error => {
+  status.connected = false
+  console.log('Error in serial port connection', error)
+  reconnect()
+})
+
+parser.on('data', log)
+
+const reconnect = () => {
+  clearInterval(connectionIntervalID)
+  connectionIntervalID = setInterval(() => {
+    console.log('Attempting to connect to teensy...')
+    serial.open()
+  }, connectionInterval)
+}
+
 let measurements = require('./mockdata')
 let io
 
-const statusInterval = 50
-const dataInterval = 1
-const timeout = 1 // minutes
-
-let statusIntervalID
-let dataIntervalID
-
 let status = {
-  started: false,
-  sampleSize: 0,
-  sampleSizeLimit: 1000,
-  sampleSizeLimited: true,
+  connected: false,
+  running: false,
+  dataPoints: 0,
   sampleSpeed: 0,
+}
+
+let config = {
+  cycleCount: 3,
   coefficient: 1
 }
 
@@ -25,52 +60,42 @@ const datasetNames = [
   "Electrical runout"
 ]
 
-let sensor1baseline
-let sensor2baseline
-
-const generateNewBaseline = () => {
-  sensor1baseline = Math.random() * 100
-  sensor2baseline = sensor1baseline - Math.random() * 5
-}
-
 const addNewDataPoint = (x, y, z) => {
   newMeasurement.datasets[0].data.push(x)
   newMeasurement.datasets[1].data.push(y)
   newMeasurement.datasets[2].data.push(z)
-  status.sampleSize += 1
-
-  if (status.sampleSizeLimited && status.sampleSize >= status.sampleSizeLimit) {
-    stopMeasurement()
-  }
+  status.dataPoints += 1
 }
 
-const parserCallback = (data) => {
-  const sensor1value = sensor1baseline - Math.random() * 2
-  const sensor2value = sensor2baseline - Math.random() * 2
+const readValue = (data) => {
+  if (!data.trim()) stopMeasurement()
+  
+  const sensor1value = data >>> 16
+  const sensor2value = data << 16 >>> 16
   const erunout = Math.abs(sensor1value - sensor2value)
 
   addNewDataPoint(sensor1value, sensor2value, erunout)
 }
 
 const stopMeasurement = () => {
-  if (status.started) {
-    status.started = false
-    status.sampleSize = 0
+  if (status.running) {
+    parser.removeListener('data', readValue)
+    parser.on('data', log)
+    serial.write('STOP');
+    status.running = false
+    status.dataPoints = 0
     status.sampleSpeed = 0
     measurements.push(newMeasurement)
     console.log(`Created a new measurement '${newMeasurement.name}' (${newMeasurement.datasets[0].data.length} samples)`)
     clearInterval(statusIntervalID)
-    clearInterval(dataIntervalID)
-    // serialport.close()
     io.emit('GET_STATUS', status)
     io.emit('GET_MEASUREMENTS', measurements)
   }
 }
 
 const startMeasurement = () => {
-  if (!status.started) {
-    status.started = true
-    generateNewBaseline()
+  if (!status.running) {
+    status.running = true
 
     newMeasurement = {
       name: String(Date.now()),
@@ -81,21 +106,15 @@ const startMeasurement = () => {
       }))
     }
     console.log(`Started a new measurement '${newMeasurement.name}'`)
-
-    // serialport.on('data', parserCallback)
+    serial.write(`START ${config.cycleCount}`)
+    parser.removeListener('data', log)
+    parser.on('data', readValue)
 
     statusIntervalID = setInterval(() => {
       const elapsedTime = Date.now() - Date.parse(newMeasurement.created)
-      if ((elapsedTime / 1000 / 60) >= timeout) {
-        stopMeasurement()
-      }
-      status.sampleSpeed = Math.round(status.sampleSize / (elapsedTime / 1000))
+      status.sampleSpeed = Math.round(status.dataPoints / (elapsedTime / 1000))
       io.emit('GET_STATUS', status)
     }, statusInterval)
-
-    dataIntervalID = setInterval(() => {
-      parserCallback()
-    }, dataInterval)
   }
 }
 
@@ -117,9 +136,9 @@ const events = (socketio) => {
     socket.emit('GET_STATUS', status)
     socket.emit('GET_MEASUREMENTS', measurements)
 
-    socket.on('SET_STATUS', (newStatus) => {
-      console.log('Setting status: ', newStatus)
-      status = newStatus
+    socket.on('SET_CONFIG', (newConfig) => {
+      console.log('Setting config: ', newConfig)
+      config = newConfig
       io.emit('GET_STATUS', status)
     })
 

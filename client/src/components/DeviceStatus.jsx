@@ -1,19 +1,21 @@
 import './DeviceStatus.css'
 import React, { useCallback, useEffect, useState } from 'react'
-import { ButtonGroup, Card, Col, Form, Row, Table, ToggleButton } from 'react-bootstrap'
+import { ButtonGroup, Card, Col, Row, Table, ToggleButton } from 'react-bootstrap'
 import { BsStopFill, BsPlayFill } from 'react-icons/bs'
 import { socket } from '../socket'
 import SettingInput from './SettingInput'
 
 const DeviceStatus = ({ connectionStatus }) => {
   const [ deviceStatus, setDeviceStatus ] = useState({
-    started: false,
-    sampleSize: 0,
-    sampleSizeLimit: 0,
-    sampleSizeLimited: true,
-    sampleSpeed: 0,
+    running: false,
+    dataPoints: 0,
+    sampleSpeed: 0
+  })
+  const [ deviceConfig, setDeviceConfig ] = useState({
+    cycleCount: 3,
     coefficient: 1
   })
+
   const [ startTime, setStartTime ] = useState(0)
   const elapsedTime = new Date(Date.now() - startTime)
 
@@ -23,15 +25,15 @@ const DeviceStatus = ({ connectionStatus }) => {
     })
   }, [ ])
 
+  useEffect(() => {
+    socket.emit('SET_CONFIG', deviceConfig)
+  }, [ deviceConfig ])
+
   const handleStartMeasurement = useCallback(() => {
     socket.emit('START_MEASUREMENT')
     setStartTime(Date.now())
   }, [])
   const handleStopMeasurement = useCallback(() => socket.emit('STOP_MEASUREMENT'), [])
-  const handleSetStatus = useCallback((newStatus) => {
-    setDeviceStatus(newStatus)
-    socket.emit('SET_STATUS', newStatus)
-  }, [])
 
   return (
     <Card className='device-status'>
@@ -41,46 +43,33 @@ const DeviceStatus = ({ connectionStatus }) => {
           <tbody>
             <tr>
               <td>Connection status:</td>
-              <td>{connectionStatus}</td>
+              <td>backend {connectionStatus}</td>
             </tr>
             <tr>
               <td>Measurement in progress:</td>
-              <td>{String(deviceStatus.started)}</td>
+              <td>{String(deviceStatus.running)}</td>
             </tr>
             <tr>
               <td>Time elapsed:</td>
-              <td>{deviceStatus.started ? 
+              <td>{deviceStatus.running ? 
                 `${elapsedTime.getMinutes()}m ${elapsedTime.getSeconds()}s` : 
                 '0m 0s'}</td>
             </tr>
             <tr>
               <td>Sample speed:</td>
-              <td>{deviceStatus.sampleSpeed}/s ({deviceStatus.sampleSize} total samples)</td>
+              <td>{deviceStatus.sampleSpeed}/s ({deviceStatus.dataPoints} total samples)</td>
             </tr>
             <tr>
-              <td>Sample count:</td>
+              <td>Cycle count:</td>
               <td>
                 <Row>
                   <Col xs={5}>
                     <SettingInput
-                      status={deviceStatus}
+                      config={deviceConfig}
+                      setConfig={setDeviceConfig}
                       isValid={(input) => Number.isInteger(input) && input > 0}
-                      placeholder={deviceStatus.sampleSizeLimit}
-                      propertyName='sampleSizeLimit'
-                      disabled={!deviceStatus.sampleSizeLimited}
-                    />
-                  </Col>
-                  <Col>
-                    <Form.Check 
-                      className='align-middle'
-                      inline 
-                      size='sm'
-                      label='Not limited' 
-                      checked={!deviceStatus.sampleSizeLimited}
-                      onChange={() => {
-                        const newStatus = {...deviceStatus, sampleSizeLimited: !deviceStatus.sampleSizeLimited}
-                        handleSetStatus(newStatus)
-                      }}
+                      placeholder={deviceConfig.cycleCount}
+                      propertyName='cycleCount'
                     />
                   </Col>
                 </Row>
@@ -92,9 +81,10 @@ const DeviceStatus = ({ connectionStatus }) => {
                 <Row>
                   <Col xs={5}>
                     <SettingInput 
-                      status={deviceStatus}
+                      config={deviceConfig}
+                      setConfig={setDeviceConfig}
                       isValid={(input) => Number.isFinite(input)}
-                      placeholder={deviceStatus.coefficient}
+                      placeholder={deviceConfig.coefficient}
                       propertyName='coefficient'
                     />
                   </Col>
@@ -108,7 +98,7 @@ const DeviceStatus = ({ connectionStatus }) => {
             className='status-button'
             disabled={connectionStatus !== "OK"}
             type='radio'
-            checked={deviceStatus.started}
+            checked={deviceStatus.running}
             variant="outline-success"
             onClick={handleStartMeasurement}
           >
@@ -118,7 +108,7 @@ const DeviceStatus = ({ connectionStatus }) => {
             className='status-button'
             disabled={connectionStatus !== "OK"}
             type='radio'
-            checked={!deviceStatus.started}
+            checked={!deviceStatus.running}
             variant="outline-danger"
             onClick={handleStopMeasurement}
           >

@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { Form, InputGroup, Button } from 'react-bootstrap'
-import { socket } from '../socket'
 
-const SettingInput = ({ isValid, placeholder, propertyName, disabled, status }) => {
+const SettingInput = ({ isValid, placeholder, propertyName, disabled, config, setConfig }) => {
   const [ value, setValue ] = useState('')
   const [ isInvalid, setIsInvalid ] = useState(false)
 
@@ -10,10 +9,10 @@ const SettingInput = ({ isValid, placeholder, propertyName, disabled, status }) 
     event.preventDefault()
     const newValue = Number(value)
     if (isValid(newValue)) {
-      const newStatus = {...status, [propertyName]: newValue}
+      const newConfig = {...config, [propertyName]: newValue}
       setValue('')
       setIsInvalid(false)
-      socket.emit('SET_STATUS', newStatus)
+      setConfig(newConfig)
     } else {
       setIsInvalid(true)
     }
