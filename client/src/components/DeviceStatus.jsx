@@ -7,6 +7,8 @@ import SettingInput from './SettingInput'
 
 const DeviceStatus = ({ connectionStatus }) => {
   const [ deviceStatus, setDeviceStatus ] = useState({
+    serialConnectionStatus: 'Connecting...',
+    serialPath: '',
     running: false,
     dataPoints: 0,
     sampleSpeed: 0
@@ -43,7 +45,16 @@ const DeviceStatus = ({ connectionStatus }) => {
           <tbody>
             <tr>
               <td>Connection status:</td>
-              <td>backend {connectionStatus}</td>
+              <td>
+                <Row>
+                  WebSocket: {connectionStatus}
+                </Row>
+                <Row>
+                  Serial: {deviceStatus.connected ? 'Connected' : 'Not connected'}
+                  {' '}
+                  {deviceStatus.serialPath && `(${deviceStatus.serialPath})`}
+                </Row>
+              </td>
             </tr>
             <tr>
               <td>Measurement in progress:</td>

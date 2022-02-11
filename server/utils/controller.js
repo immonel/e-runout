@@ -1,6 +1,8 @@
 const SerialPort = require('serialport')
 const Readline = SerialPort.parsers.Readline
-const serial = new SerialPort('/dev/ttyACM0')
+
+const serialPath = '/dev/ttyACM0'
+const serial = new SerialPort(serialPath)
 const parser = new Readline()
 serial.pipe(parser)
 
@@ -41,7 +43,8 @@ let measurements = require('./mockdata')
 let io
 
 let status = {
-  connected: false,
+  serialConnectionStatus: 'Connecting...',
+  serialPath: serialPath,
   running: false,
   dataPoints: 0,
   sampleSpeed: 0,
@@ -118,6 +121,8 @@ const startMeasurement = () => {
   }
 }
 
+const restartDevice = () => serial.write('RESTART')
+
 const getMeasurements = () => measurements
 
 const deleteMeasurements = () => {
@@ -162,6 +167,11 @@ const events = (socketio) => {
       console.log('Socket IO: Received request to delete everything!')
       deleteMeasurements()
       socket.emit('GET_MEASUREMENTS', measurements)
+    })
+
+    socket.on('RESTART_DEVICE', () => {
+      console.log('Socket IO: Received a request to shut down teensy')
+      restartDevice()
     })
   })
 }
