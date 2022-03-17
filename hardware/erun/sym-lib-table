@@ -1,6 +1,7 @@
 (sym_lib_table
-  (lib (name erun-rescue)(type Legacy)(uri ${KIPRJMOD}/erun-rescue.lib)(options "")(descr ""))
-  (lib (name teensy)(type Legacy)(uri ${KIPRJMOD}/teensy_library-master/teensy.lib)(options "")(descr ""))
-  (lib (name MCP3301-BI_P)(type Legacy)(uri ${KIPRJMOD}/MCP3301/MCP3301-BI_P.lib)(options "")(descr ""))
-  (lib (name MC3486N)(type Legacy)(uri ${KIPRJMOD}/MC3486N/MC3486N.lib)(options "")(descr ""))
+  (lib (name "erun-rescue")(type "Legacy")(uri "${KIPRJMOD}/erun-rescue.lib")(options "")(descr ""))
+  (lib (name "teensy")(type "Legacy")(uri "${KIPRJMOD}/teensy_library-master/teensy.lib")(options "")(descr ""))
+  (lib (name "MCP3301-BI_P")(type "Legacy")(uri "${KIPRJMOD}/MCP3301/MCP3301-BI_P.lib")(options "")(descr ""))
+  (lib (name "MC3486N")(type "Legacy")(uri "${KIPRJMOD}/MC3486N/MC3486N.lib")(options "")(descr ""))
+  (lib (name "TXB0108PWR")(type "Legacy")(uri "${KIPRJMOD}/TXB0108PWR/TXB0108PWR.lib")(options "")(descr ""))
 )
