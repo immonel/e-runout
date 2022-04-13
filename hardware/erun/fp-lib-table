@@ -3,4 +3,5 @@
   (lib (name "MCP3301")(type "KiCad")(uri "${KIPRJMOD}/MCP3301")(options "")(descr ""))
   (lib (name "MC3486N")(type "KiCad")(uri "${KIPRJMOD}/MC3486N")(options "")(descr ""))
   (lib (name "TXB0108PWR")(type "KiCad")(uri "${KIPRJMOD}/TXB0108PWR")(options "")(descr ""))
+  (lib (name "SW_DP3T")(type "KiCad")(uri "${KIPRJMOD}/SW_DP3T.pretty")(options "")(descr ""))
 )
