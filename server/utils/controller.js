@@ -6,10 +6,12 @@ const serial = new SerialPort(serialPath)
 const parser = new Readline()
 serial.pipe(parser)
 
-const connectionInterval = 5000
 const statusInterval = 50
 let connectionIntervalID
 let statusIntervalID
+
+let measurements = require('./mockdata')
+let io
 
 const log = (data) => console.log('[teensy]', data)
 
@@ -21,26 +23,16 @@ serial.on('open', () => {
 serial.on('close', () => {
   status.connected = false
   console.log('Serial port connection lost for teensy')
-  reconnect()
+  io.emit('GET_STATUS', status)
 })
 serial.on('error', error => {
   status.connected = false
   console.log('Error in serial port connection', error)
-  reconnect()
+  io.emit('GET_STATUS', status)
 })
 
 parser.on('data', log)
 
-const reconnect = () => {
-  clearInterval(connectionIntervalID)
-  connectionIntervalID = setInterval(() => {
-    console.log('Attempting to connect to teensy...')
-    serial.open()
-  }, connectionInterval)
-}
-
-let measurements = require('./mockdata')
-let io
 
 let status = {
   serialConnectionStatus: 'Connecting...',
