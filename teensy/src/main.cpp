@@ -82,6 +82,11 @@ void loop() {
       Serial.println("Restarting...");
       reboot();
     }
+    else if (command == "ZERO")
+    {
+      Serial.println("Zeroing encoder...");
+      heidenHain.write(0);
+    }
     else 
     {
       Serial.println("Invalid command.");

@@ -115,6 +115,8 @@ const startMeasurement = () => {
 
 const restartDevice = () => serial.write('RESTART')
 
+const zeroEncoder = () => serial.write('ZERO')
+
 const getMeasurements = () => measurements
 
 const deleteMeasurements = () => {
@@ -164,6 +166,11 @@ const events = (socketio) => {
     socket.on('RESTART_DEVICE', () => {
       console.log('Socket IO: Received a request to shut down teensy')
       restartDevice()
+    })
+
+    socket.on('ZERO', () => {
+      console.log('Socket IO: Received a request to zero the encoder')
+      zeroEncoder()
     })
   })
 }
