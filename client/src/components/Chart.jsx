@@ -21,12 +21,14 @@ const _Chart = ({ measurement }) => {
     data: measurement ? 
       {
         labels: Array.from({length: measurement.datasets[0].data.length}, (x, i) => i),
-        datasets: measurement.datasets.map((dataset, i) => ({
-          label: dataset.name,
-          data: dataset.data.map((data, i) => ({x: i, y: data})),
-          backgroundColor: chartColors[i % 3],
-          borderColor: chartColors[i % 3]
-        }))
+        datasets: measurement.datasets.map((dataset, i) => {
+          const average = dataset.data.reduce((a, b) => a + b, 0) / dataset.data.length
+          return {
+            label: dataset.name,
+            data: dataset.data.map((data, i) => ({x: i, y: data - average})),
+            backgroundColor: chartColors[i % 3],
+            borderColor: chartColors[i % 3]
+        }})
       }
      : emptyData(),
     options: {
