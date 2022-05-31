@@ -1,41 +1,102 @@
 #include <Arduino.h>
 #include "QuadEncoder.h"
 #include <sstream>
+#include <SPI.h>
 
+#define SS_PIN 10
 #define CYCLE_SIZE 1024
 
-QuadEncoder heidenHain(1, 3, 4);
+QuadEncoder heidenHain1(1, 1, 2);
+QuadEncoder heidenHain2(2, 3, 4, 0, 7);
 
 bool running = false;
 
 void setup() {
   Serial.begin(1);
   Serial.println("Started up Teensy");
-  // heidenHain.setInitConfig();
-  // heidenHain.init();
+  
+  // Setup QuadEncoders
+  heidenHain1.setInitConfig();
+  heidenHain1.init();
+  heidenHain2.setInitConfig();
+  heidenHain2.EncConfig.IndexTrigger = ENABLE;
+  // heidenHain2.EncConfig.INDEXTriggerMode = RISING_EDGE;
+  heidenHain2.init();
+
+  // Setup SPI
+  pinMode(SS_PIN, OUTPUT);
+  digitalWrite(SS_PIN, HIGH);
+  SPI.begin();
+  SPI.beginTransaction(SPISettings(2000000, MSBFIRST, SPI_MODE1));
+}
+
+int16_t readSPI() {
+  digitalWrite(SS_PIN, LOW);
+  int16_t result = 0;
+  byte data = SPI.transfer(0);
+  // Extract sign bit
+  // result = data & 0b00010000;
+  // result <<= 3;
+  // Extract high byte
+  result += data & 0b00001111;
+  result <<= 8;
+  // Extract lower byte
+  data = SPI.transfer(0);
+  result += data;
+  digitalWrite(SS_PIN, HIGH);
+  return result;
 }
 
 void measure(size_t cycles) {
   running = true;
-  // Serial.println("Started measuring");
-  // Serial.print("Cycle count: ");
-  // Serial.println(cycles);
+  int32_t heidenHain1Value;
+  int32_t heidenHain2Value;
+  int16_t eddyValue;
 
-  for (size_t i = 0; i < cycles; i++) {
-    for (size_t j = 0; j < CYCLE_SIZE; j++) {
-      if (!running) return;
-      // Random value between 41 and 39 etc..
-      int16_t sensor1value = rand() % (41 + 1 - 39) + 39;
-      int16_t sensor2value = rand() % (51 + 1 - 49) + 49;
+  // Reset rotary encoder
+  heidenHain2.write(0);
+  heidenHain2.indexCounter = 0;
+  uint32_t maxEncoderValue = 0;
 
-      int randomValue = sensor1value;
-      randomValue = (randomValue << (sizeof(int16_t) * 8)) | sensor2value;
-      Serial.println(randomValue);
-      delayMicroseconds(900); // ~1024 times per second
+  while (running) {
+    heidenHain2Value = abs(heidenHain2.read());
+    if (heidenHain2.indexCounter > cycles) break;
+
+    if (heidenHain2.indexCounter > 0) {
+      if (heidenHain2Value > maxEncoderValue) {
+        heidenHain1Value = heidenHain1.read();
+        eddyValue = readSPI();
+
+        /* 
+          Data point format:
+          +--------------------------------+----------------+----------------+
+          | TTL sensor                     | Eddy probe     | Cycle          |
+          | 32 bits                        | 16 bits        | 16 bits        |
+          +--------------------------------+----------------+----------------+
+        */
+        uint64_t dataPoint =
+          ((uint64_t) heidenHain1Value << 32) |
+          ((uint64_t) eddyValue        << 16) |
+          (uint64_t)  heidenHain2.indexCounter;
+
+        // Serial.printf("HH1: %d\tHH2: %d\tEddy: %d\tCycle: %d\n", 
+        //   heidenHain1Value, 
+        //   heidenHain2Value, 
+        //   eddyValue,
+        //   heidenHain2.indexCounter);
+        // Serial.printf("%016llx\n", dataPoint);
+
+        Serial.println(dataPoint);
+        maxEncoderValue = heidenHain2Value;
+      }
+    } else {
+      // Reset rotary encoder if not yet at trigger point
+      heidenHain2.write(0);
     }
   }
 
-  Serial.println();
+  // Indicates end of data points
+  Serial.println(0l);
   Serial.println("Measurement finished!");
 }
 
@@ -44,16 +105,8 @@ void reboot() {
   SCB_AIRCR = 0x05FA0004;
 }
 
-// long value;
-void loop() {
 
-  // long newValue = heidenHain.read();
-  // if (newValue != value) {
-  //   value = newValue;
-  //   Serial.print("Sensor value: ");
-  //   Serial.println(value);
-  // }
-  
+void loop() {
   if (Serial.available() > 0) {
     std::string input = std::string(Serial.readString().c_str());
     std::istringstream ss(input);
@@ -85,7 +138,7 @@ void loop() {
     else if (command == "ZERO")
     {
       Serial.println("Zeroing encoder...");
-      heidenHain.write(0);
+      heidenHain1.write(0);
     }
     else 
     {
