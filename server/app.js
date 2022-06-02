@@ -5,9 +5,13 @@ const controlRouter = require('./api/control')
 const middleware = require('./utils/middleware')
 const cors = require('cors')
 
-app.use(express.static('../client/build'))
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('public'))
+} else {
+  app.use(express.static('../client/build'))
+  app.use(cors())
+}
 app.use(express.json())
-app.use(cors())
 
 app.use('/api/measurements', measurementsRouter)
 app.use('/api/control', controlRouter)

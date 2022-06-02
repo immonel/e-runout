@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  erunout:
+    container_name: erunout-server
+    build: .
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - 80:3000
