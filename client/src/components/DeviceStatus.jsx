@@ -13,10 +13,12 @@ const DeviceStatus = ({ connectionStatus }) => {
     dataPoints: 0,
     sampleSpeed: 0
   })
-  const [ deviceConfig, setDeviceConfig ] = useState({
-    cycleCount: 3,
-    coefficient: 1
-  })
+  const [ deviceConfig, setDeviceConfig ] = useState({})
+
+  const setConfig = (config) => {
+    setDeviceConfig(config)
+    socket.emit('SET_CONFIG', config)
+  }
 
   const [ startTime, setStartTime ] = useState(0)
   const elapsedTime = new Date(Date.now() - startTime)
@@ -25,11 +27,12 @@ const DeviceStatus = ({ connectionStatus }) => {
     socket.on('GET_STATUS', status => {
       setDeviceStatus(status)
     })
+    socket.on('GET_CONFIG', config => {
+      setDeviceConfig(config)
+    })
+    socket.emit('GET_CONFIG')
+    socket.emit('GET_STATUS')
   }, [ ])
-
-  useEffect(() => {
-    socket.emit('SET_CONFIG', deviceConfig)
-  }, [ deviceConfig ])
 
   const handleStartMeasurement = useCallback(() => {
     socket.emit('START_MEASUREMENT')
@@ -77,7 +80,7 @@ const DeviceStatus = ({ connectionStatus }) => {
                   <Col xs={5}>
                     <SettingInput
                       config={deviceConfig}
-                      setConfig={setDeviceConfig}
+                      setConfig={setConfig}
                       isValid={(input) => Number.isInteger(input) && input > 0}
                       placeholder={deviceConfig.cycleCount}
                       propertyName='cycleCount'
@@ -85,22 +88,6 @@ const DeviceStatus = ({ connectionStatus }) => {
                   </Col>
                 </Row>
               </td>
-            </tr>
-            <tr>
-              <td>Coefficient:</td>
-              <td>
-                <Row>
-                  <Col xs={5}>
-                    <SettingInput 
-                      config={deviceConfig}
-                      setConfig={setDeviceConfig}
-                      isValid={(input) => Number.isFinite(input)}
-                      placeholder={deviceConfig.coefficient}
-                      propertyName='coefficient'
-                    />
-                  </Col>
-                </Row>
-                </td>
             </tr>
           </tbody>
         </Table>

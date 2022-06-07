@@ -10,7 +10,7 @@ const statusInterval = 50
 let connectionIntervalID
 let statusIntervalID
 
-let measurements = require('./mockdata')
+let measurements = []
 let io
 
 const log = (data) => console.log('[teensy]', data)
@@ -31,9 +31,6 @@ serial.on('error', error => {
   io.emit('GET_STATUS', status)
 })
 
-parser.on('data', log)
-
-
 let status = {
   serialConnectionStatus: 'Connecting...',
   serialPath: serialPath,
@@ -44,38 +41,33 @@ let status = {
 
 let config = {
   cycleCount: 3,
-  coefficient: 1
+  ttlSensorName: 'Heidenhain MT-25',
+  ttlSensorCoefficient: 0.01,
+  eddySensorName: 'Eddy Current Probe',
+  eddySensorCoefficient: 1
 }
 
 let newMeasurement
 
-const datasetNames = [
-  "Heidenhain MT-25",
-  "Heidenhain ROD-420",
-  "Electrical runout"
-]
-
-const addNewDataPoint = (x, y, z) => {
+const addNewDataPoint = (x, y) => {
   newMeasurement.datasets[0].data.push(x)
   newMeasurement.datasets[1].data.push(y)
-  newMeasurement.datasets[2].data.push(z)
   status.dataPoints += 1
 }
 
 const readValue = (data) => {
-  if (!data.trim()) stopMeasurement()
-  
-  const sensor1value = data >>> 16
-  const sensor2value = data << 16 >>> 16
-  const erunout = Math.abs(sensor1value - sensor2value)
-
-  addNewDataPoint(sensor1value, sensor2value, erunout)
+  // console.log(data)
+  if (data == 0) stopMeasurement()
+  if (!isNaN(data)) {
+    const sensor1value = Number(BigInt.asIntN(32, BigInt(data) >> 32n))
+    const sensor2value = (data >>> 16) & 0xffff
+    addNewDataPoint(sensor1value, sensor2value)
+  }
 }
 
 const stopMeasurement = () => {
   if (status.running) {
     parser.removeListener('data', readValue)
-    parser.on('data', log)
     serial.write('STOP');
     status.running = false
     status.dataPoints = 0
@@ -95,14 +87,21 @@ const startMeasurement = () => {
     newMeasurement = {
       name: String(Date.now()),
       created: new Date(Date.now()),
-      datasets: datasetNames.map(datasetName => ({
-        name: datasetName,
-        data: []
-      }))
+      datasets: [
+        {
+          name: config.ttlSensorName,
+          coefficient: config.ttlSensorCoefficient,
+          data: []
+        },
+        {
+          name: config.eddySensorName,
+          coefficient: config.eddySensorCoefficient,
+          data: []
+        }
+      ]
     }
     console.log(`Started a new measurement '${newMeasurement.name}'`)
     serial.write(`START ${config.cycleCount}`)
-    parser.removeListener('data', log)
     parser.on('data', readValue)
 
     statusIntervalID = setInterval(() => {
@@ -134,11 +133,16 @@ const events = (socketio) => {
   io.on('connection', (socket) => {
     socket.emit('GET_STATUS', status)
     socket.emit('GET_MEASUREMENTS', measurements)
+    socket.emit('GET_CONFIG', config)
 
     socket.on('SET_CONFIG', (newConfig) => {
       console.log('Setting config: ', newConfig)
       config = newConfig
-      io.emit('GET_STATUS', status)
+      io.emit('GET_CONFIG', config)
+    })
+
+    socket.on('GET_CONFIG', () => {
+      socket.emit('GET_CONFIG', config)
     })
 
     socket.on('START_MEASUREMENT', () => {

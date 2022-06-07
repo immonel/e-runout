@@ -15,9 +15,31 @@ const Measurements = ({ connectionStatus }) => {
   const [ selected, setSelected ] = useState('')
   const [ measurements, setMeasurements ] = useState([])
 
+  const preprocess = (measurements) => (
+    measurements.map(measurement => {
+      /* Transform raw sensor values */
+      const processedMeasurement = {
+        ...measurement,
+        datasets: measurement.datasets.map(dataset => ({
+          ...dataset,
+          data: dataset.data.map(dataPoint => dataPoint * dataset.coefficient)
+        }))
+      }
+      /* Add electrical runout */
+      processedMeasurement.datasets.push({
+        name: 'Electrical runout',
+        coefficient: 1,
+        data: processedMeasurement.datasets[0].data.map((dataPoint, i) => (
+          Math.abs(dataPoint - processedMeasurement.datasets[1].data[i])
+        ))
+      })
+      return processedMeasurement
+    })
+  )
+
   useEffect(() => {
     socket.on('GET_MEASUREMENTS', data => {
-      setMeasurements(data)
+      setMeasurements(preprocess(data))
       setSelected(data[0] ? data[0].name : '')
     })
 
