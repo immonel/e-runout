@@ -47,6 +47,31 @@ int16_t readSPI() {
   return result;
 }
 
+void stopMeasurement() {
+  if (running) {
+    running = false;
+    // Indicates end of data points
+    Serial.println(0l);
+    Serial.println("Measurement finished!");
+  }
+}
+
+void checkStop() {
+  if (Serial.available() > 0)
+  {
+    std::string input = std::string(Serial.readString().c_str());
+    std::istringstream ss(input);
+
+    std::string command;
+    ss >> command;
+
+    if (command == "STOP")
+    {
+      stopMeasurement();
+    }
+  }
+}
+
 void measure(size_t cycles) {
   running = true;
   int32_t heidenHain1Value;
@@ -93,18 +118,16 @@ void measure(size_t cycles) {
       // Reset rotary encoder if not yet at trigger point
       heidenHain2.write(0);
     }
+    // Check if stop command has been given
+    checkStop();
   }
-
-  // Indicates end of data points
-  Serial.println(0l);
-  Serial.println("Measurement finished!");
+  stopMeasurement();
 }
 
 void reboot() {
   Serial.end();
   SCB_AIRCR = 0x05FA0004;
 }
-
 
 void loop() {
   if (Serial.available() > 0) {
@@ -127,8 +150,7 @@ void loop() {
     } 
     else if (command == "STOP") 
     {
-      running = false;
-      Serial.println("Measuring stopped.");
+      stopMeasurement();
     }
     else if (command == "RESTART")
     {
