@@ -32,8 +32,14 @@ const _Chart = ({ measurement }) => {
       }
      : emptyData(),
     options: {
+      scales: {
+        x: {
+          type: 'linear'
+        }
+      },
       maintainAspectRatio: false,
       parsing: false,
+      animation: false,
       radius: 0
     }
   }
