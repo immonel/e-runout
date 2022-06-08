@@ -1,51 +1,13 @@
-const SerialPort = require('serialport')
-const Readline = SerialPort.parsers.Readline
-
-const serialPath = '/dev/ttyACM0'
-const serial = new SerialPort(serialPath)
-const parser = new Readline()
-serial.pipe(parser)
-
+const status = require('./status').status
+const config = require('./config').config
 const statusInterval = 50
-let connectionIntervalID
+
 let statusIntervalID
 
 let measurements = []
 let io
-
-const log = (data) => console.log('[teensy]', data)
-
-serial.on('open', () => {
-  status.connected = true
-  clearInterval(connectionIntervalID)
-  console.log('Serial port connection established for teensy')
-})
-serial.on('close', () => {
-  status.connected = false
-  console.log('Serial port connection lost for teensy')
-  io.emit('GET_STATUS', status)
-})
-serial.on('error', error => {
-  status.connected = false
-  console.log('Error in serial port connection', error)
-  io.emit('GET_STATUS', status)
-})
-
-let status = {
-  serialConnectionStatus: 'Connecting...',
-  serialPath: serialPath,
-  running: false,
-  dataPoints: 0,
-  sampleSpeed: 0,
-}
-
-let config = {
-  cycleCount: 3,
-  ttlSensorName: 'Heidenhain MT-25',
-  ttlSensorCoefficient: 0.01,
-  eddySensorName: 'Eddy Current Probe',
-  eddySensorCoefficient: 1
-}
+let serial
+let parser
 
 let newMeasurement
 
@@ -67,8 +29,8 @@ const readValue = (data) => {
 
 const stopMeasurement = () => {
   if (status.running) {
+    serial.write('STOP')
     parser.removeListener('data', readValue)
-    serial.write('STOP');
     status.running = false
     status.dataPoints = 0
     status.sampleSpeed = 0
@@ -79,6 +41,7 @@ const stopMeasurement = () => {
     io.emit('GET_MEASUREMENTS', measurements)
   }
 }
+const log = (data) => console.log('[teensy]', data)
 
 const startMeasurement = () => {
   if (!status.running) {
@@ -103,6 +66,7 @@ const startMeasurement = () => {
     console.log(`Started a new measurement '${newMeasurement.name}'`)
     serial.write(`START ${config.cycleCount}`)
     parser.on('data', readValue)
+    
 
     statusIntervalID = setInterval(() => {
       const elapsedTime = Date.now() - Date.parse(newMeasurement.created)
@@ -111,10 +75,6 @@ const startMeasurement = () => {
     }, statusInterval)
   }
 }
-
-const restartDevice = () => serial.write('RESTART')
-
-const zeroEncoder = () => serial.write('ZERO')
 
 const getMeasurements = () => measurements
 
@@ -128,22 +88,13 @@ const deleteMeasurement = (name) => {
   console.log(`Deleted measurement '${name}'`)
 }
 
-const events = (socketio) => {
-  io = socketio
+const handlers = (_io, _serial, _parser) => {
+  io = _io
+  serial = _serial
+  parser = _parser
+
   io.on('connection', (socket) => {
-    socket.emit('GET_STATUS', status)
     socket.emit('GET_MEASUREMENTS', measurements)
-    socket.emit('GET_CONFIG', config)
-
-    socket.on('SET_CONFIG', (newConfig) => {
-      console.log('Setting config: ', newConfig)
-      config = newConfig
-      io.emit('GET_CONFIG', config)
-    })
-
-    socket.on('GET_CONFIG', () => {
-      socket.emit('GET_CONFIG', config)
-    })
 
     socket.on('START_MEASUREMENT', () => {
       console.log('Socket IO: Received request to start measuring')
@@ -166,24 +117,10 @@ const events = (socketio) => {
       deleteMeasurements()
       socket.emit('GET_MEASUREMENTS', measurements)
     })
-
-    socket.on('RESTART_DEVICE', () => {
-      console.log('Socket IO: Received a request to shut down teensy')
-      restartDevice()
-    })
-
-    socket.on('ZERO', () => {
-      console.log('Socket IO: Received a request to zero the encoder')
-      zeroEncoder()
-    })
   })
 }
 
 module.exports = {
-  startMeasurement,
-  stopMeasurement,
-  getMeasurements,
-  deleteMeasurements,
-  deleteMeasurement,
-  events
+  handlers,
+  getMeasurements
 }

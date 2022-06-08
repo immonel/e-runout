@@ -1,5 +1,5 @@
 const measurementsRouter = require('express').Router()
-const controller = require('../utils/controller')
+const controller = require('../utils/measurement')
 
 const downloadHeaders = (name) => ({
   "Content-Type": "application/json",
