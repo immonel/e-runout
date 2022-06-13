@@ -35,6 +35,7 @@ const CalibrationControls = () => {
                       isValid={(input) => !isNaN(input)}
                       placeholder={deviceConfig.ttlSensorCoefficient}
                       propertyName='ttlSensorCoefficient'
+                      type='number'
                     />
                   </Col>
                 </Row>
@@ -49,6 +50,7 @@ const CalibrationControls = () => {
                       isValid={(input) => !isNaN(input)}
                       placeholder={deviceConfig.eddySensorCoefficient}
                       propertyName='eddySensorCoefficient'
+                      type='number'
                     />
                   </Col>
                 </Row>
@@ -63,6 +65,7 @@ const CalibrationControls = () => {
                       isValid={(input) => Number.isInteger(input) && input > 0}
                       placeholder={deviceConfig.cycleCount}
                       propertyName='cycleCount'
+                      type='number'
                     />
                   </Col>
                 </Row>

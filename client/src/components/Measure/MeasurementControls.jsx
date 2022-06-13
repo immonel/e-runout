@@ -27,6 +27,26 @@ const MeasurementControls = () => {
         <Table>
           <tbody>
             <tr>
+              <td>TTL sensor name:</td>
+              <td>
+                <SettingInput
+                  isValid={(input) => input.length < 50}
+                  placeholder={deviceConfig.ttlSensorName}
+                  propertyName='ttlSensorName'
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>Eddy Current sensor name:</td>
+              <td>
+                <SettingInput
+                  isValid={(input) => input.length < 50}
+                  placeholder={deviceConfig.eddySensorName}
+                  propertyName='eddySensorName'
+                />
+              </td>
+            </tr>
+            <tr>
               <td>Cycle count:</td>
               <td>
                 <Row>
@@ -35,6 +55,7 @@ const MeasurementControls = () => {
                       isValid={(input) => Number.isInteger(input) && input > 0}
                       placeholder={deviceConfig.cycleCount}
                       propertyName='cycleCount'
+                      type='number'
                     />
                   </Col>
                 </Row>

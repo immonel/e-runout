@@ -3,14 +3,17 @@ import { Form, InputGroup, Button } from 'react-bootstrap'
 import { useDispatch } from 'react-redux'
 import { setConfig } from '../reducers/configReducer'
 
-const SettingInput = ({ isValid, placeholder, propertyName, disabled }) => {
+const SettingInput = ({ isValid, placeholder, propertyName, disabled, type }) => {
   const [ value, setValue ] = useState('')
   const [ isInvalid, setIsInvalid ] = useState(false)
   const dispatch = useDispatch()
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    const newValue = Number(value)
+    let newValue = value
+    if (type === 'number') {
+      newValue = Number(value)
+    }
     if (isValid(newValue)) {
       setValue('')
       setIsInvalid(false)
