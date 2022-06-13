@@ -28,19 +28,19 @@ const handlers = (io, serial) => {
   })
 
   serial.on('open', () => {
-    status.connected = true
+    status.serialConnectionStatus = 'Connected'
     clearInterval(connectionIntervalID)
     console.log('Serial port connection established for teensy')
   })
 
   serial.on('close', () => {
-    status.connected = false
+    status.serialConnectionStatus = 'Disconnected'
     console.log('Serial port connection lost for teensy')
     io.emit('GET_STATUS', status)
   })
 
   serial.on('error', error => {
-    status.connected = false
+    status.serialConnectionStatus = 'Not connected'
     console.log('Error in serial port connection', error)
     io.emit('GET_STATUS', status)
   })
