@@ -16,13 +16,25 @@ const emptyData = () => ({
 })
 
 const CalibrationChart = ({ measurement }) => {
+  let linregr = {}
+  let linregrPoints = []
 
-  const linregr = measurement
-    ? regression.linear(
-        measurement.datasets[0].data.map((x, i) => [x, measurement.datasets[1].data[i]])
-          .filter(([x, y]) => y < 3500)
-      )
-    : []
+  if (measurement) {
+    linregr = regression.linear(
+      measurement.datasets[0].data.map((x, i) => [x, measurement.datasets[1].data[i]])
+        .filter(([x, y]) => y < 3500)
+    )
+    linregrPoints = [
+      {
+        x: 0,
+        y: linregr.equation[1]
+      },
+      {
+        x: (-1 * linregr.equation[1]) / linregr.equation[0],
+        y: 0
+      }
+    ]
+  }
 
   const config = {
     type: 'scatter',  
@@ -45,7 +57,7 @@ const CalibrationChart = ({ measurement }) => {
         {
           type: 'line',
           label: 'Linear regression',
-          data: linregr.points.map(([x, y]) => ({x, y})),
+          data: linregrPoints,
           borderColor: 'rgb(0, 0, 0)',
           radius: 0,
           order: 0

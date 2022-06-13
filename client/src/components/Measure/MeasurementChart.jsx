@@ -37,6 +37,11 @@ const MeasurementChart = ({ measurement }) => {
           type: 'linear'
         }
       },
+      elements: {
+        line: {
+          tension: 0
+        }
+      },
       maintainAspectRatio: false,
       parsing: false,
       animation: false,
