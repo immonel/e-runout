@@ -7,54 +7,39 @@ import Navbar from './components/Navbar'
 import { socket } from './socket'
 import Calibrate from './components/Calibrate/Calibrate'
 import Measure from './components/Measure/Measure'
+import { useDispatch } from 'react-redux'
+import { updateStatus } from './reducers/statusReducer'
+import { updateConfig } from './reducers/configReducer'
 
 const App = () => {
-  const [ socketConnectionStatus, setSocketConnectionStatus ] = useState('Connecting...')
-  const [ deviceStatus, setDeviceStatus ] = useState({
-    serialConnectionStatus: 'Not available',
-    serialPath: '',
-    running: false,
-    dataPoints: 0,
-    sampleSpeed: 0
-  })
-  const [ deviceConfig, setDeviceConfig ] = useState({})
   const [ startTime, setStartTime ] = useState(0)
   const elapsedTime = new Date(Date.now() - startTime)
-
-  const setConfig = (config) => {
-    setDeviceConfig(config)
-    socket.emit('SET_CONFIG', config)
-  }
+  const dispatch = useDispatch()
 
   useEffect(() => {
     socket.emit("connection")
     socket.on("connect", () => {
-      setSocketConnectionStatus('OK')
-    })
-    socket.on('disconnect', reason => {
-      setSocketConnectionStatus(reason)
-      setDeviceStatus({
-        ...deviceStatus,
-        serialConnectionStatus: 'Not available'
-      })
+      dispatch(updateStatus({
+        socketConnectionStatus: 'OK'
+      }))
     })
 
-    socket.on('GET_STATUS', status => {
-      setDeviceStatus({
-        ...deviceStatus,
-        ...status
-      })
+    socket.on('disconnect', reason => {
+      dispatch(updateStatus({
+        socketConnectionStatus: reason,
+        serialConnectionStatus: 'Not available'
+      }))
     })
 
     socket.on('GET_CONFIG', config => {
-      setDeviceConfig(config)
+      dispatch(updateConfig(config))
     })
 
     socket.emit('GET_CONFIG')
     socket.emit('GET_STATUS')
 
     return () => socket.disconnect()
-  }, [ ])
+  }, [ dispatch ])
 
   return (
     <>
@@ -63,17 +48,11 @@ const App = () => {
         <Tabs defaultActiveKey='measure' className='mb-4'>
           <Tab eventKey='measure' title='Measure'>
             <Measure
-              deviceStatus={{...deviceStatus, socketConnectionStatus}}
-              deviceConfig={deviceConfig}
-              setConfig={setConfig}
               elapsedTime={elapsedTime}
             />
           </Tab>
           <Tab eventKey='calibrate' title='Calibrate'>
             <Calibrate
-              deviceStatus={{...deviceStatus, socketConnectionStatus}}
-              deviceConfig={deviceConfig}
-              setConfig={setConfig}
               elapsedTime={elapsedTime}
             />
           </Tab>

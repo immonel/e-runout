@@ -1,12 +1,16 @@
 import React, { useCallback } from 'react'
 import { ButtonGroup, Card, Col, Row, Table, ToggleButton } from 'react-bootstrap'
 import { BsPlayFill, BsStopFill } from 'react-icons/bs'
+import { useSelector } from 'react-redux'
 import { socket } from '../../socket'
 import SettingInput from '../SettingInput'
 
 
 
-const CalibrationControls = ({ deviceStatus, deviceConfig, setConfig }) => {
+const CalibrationControls = () => {
+  const deviceStatus = useSelector(state => state.status)
+  const deviceConfig = useSelector(state => state.config)
+
   const handleStartMeasurement = useCallback(() => {
     socket.emit('START_MEASUREMENT')
     // setStartTime(Date.now())
@@ -28,8 +32,6 @@ const CalibrationControls = ({ deviceStatus, deviceConfig, setConfig }) => {
                 <Row>
                   <Col xs={5}>
                     <SettingInput
-                      config={deviceConfig}
-                      setConfig={setConfig}
                       isValid={(input) => !isNaN(input)}
                       placeholder={deviceConfig.ttlSensorCoefficient}
                       propertyName='ttlSensorCoefficient'
@@ -44,8 +46,6 @@ const CalibrationControls = ({ deviceStatus, deviceConfig, setConfig }) => {
                 <Row>
                   <Col xs={5}>
                     <SettingInput
-                      config={deviceConfig}
-                      setConfig={setConfig}
                       isValid={(input) => !isNaN(input)}
                       placeholder={deviceConfig.eddySensorCoefficient}
                       propertyName='eddySensorCoefficient'
@@ -60,8 +60,6 @@ const CalibrationControls = ({ deviceStatus, deviceConfig, setConfig }) => {
                 <Row>
                   <Col xs={5}>
                     <SettingInput
-                      config={deviceConfig}
-                      setConfig={setConfig}
                       isValid={(input) => Number.isInteger(input) && input > 0}
                       placeholder={deviceConfig.cycleCount}
                       propertyName='cycleCount'

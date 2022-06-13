@@ -10,7 +10,7 @@ const MeasurementList = ({ measurements, selected, setSelected }) => (
     { 
       measurements.length 
       ?
-        measurements.sort((x, y) => new Date(y.created) - new Date(x.created)).map((x, i) =>
+        [...measurements].sort((x, y) => new Date(y.created) - new Date(x.created)).map((x, i) =>
           <ListGroup.Item 
             action 
             onClick={() => setSelected(x.name)} 
