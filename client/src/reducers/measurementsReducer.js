@@ -27,7 +27,6 @@ const measurementsSlice = createSlice({
   initialState: [],
   reducers: {
     updateMeasurements(state, action) {
-      console.log('nauraa')
       return preprocess(action.payload)
     }
   }

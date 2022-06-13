@@ -1,12 +1,9 @@
+import { Button } from 'react-bootstrap'
 import { Chart } from 'react-chartjs-2'
+import { useDispatch } from 'react-redux'
 import regression from 'regression'
+import { setConfig } from '../../reducers/configReducer'
 import './CalibrationChart.css'
-
-const chartColors = [
-  'rgba(54, 162, 235, 0.7)',
-  'rgba(255, 99, 132, 0.7)',
-  'rgba(255, 206, 86, 0.7)'
-]
 
 const emptyData = () => ({
   datasets: [{
@@ -16,6 +13,7 @@ const emptyData = () => ({
 })
 
 const CalibrationChart = ({ measurement }) => {
+  const dispatch = useDispatch()
   let linregr = {}
   let linregrPoints = []
 
@@ -34,6 +32,12 @@ const CalibrationChart = ({ measurement }) => {
         y: 0
       }
     ]
+  }
+
+  const setAsCalibration = () => {
+    dispatch(setConfig({
+      eddySensorCoefficient: 1 / linregr.equation[0]
+    }))
   }
 
   const config = {
@@ -93,6 +97,9 @@ const CalibrationChart = ({ measurement }) => {
       <div className='chart'>
         <Chart { ...config } />
       </div>
+      <Button onClick={setAsCalibration} disabled={!measurement}>
+        Use this calibration
+      </Button>
     </>
   )
 }

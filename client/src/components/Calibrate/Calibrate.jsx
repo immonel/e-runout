@@ -7,16 +7,16 @@ import Chart from './CalibrationChart'
 import DeviceStatus from '../DeviceStatus'
 import CalibrationControls from './CalibrationControls'
 import { useDispatch, useSelector } from 'react-redux'
-import { updateMeasurements } from '../../reducers/measurementsReducer'
+import { updateCalibrations } from '../../reducers/calibrationReducer'
 
 const Calibrate = ({ elapsedTime }) => {
   const [ selected, setSelected ] = useState('')
-  const measurements = useSelector(state => state.measurements)
+  const calibrations = useSelector(state => state.calibrations)
   const dispatch = useDispatch()
 
   useEffect(() => {
     socket.on('GET_MEASUREMENTS', data => {
-      dispatch(updateMeasurements(data))
+      dispatch(updateCalibrations(data))
       setSelected(data[0] ? data[0].name : '')
     })
 
@@ -33,10 +33,10 @@ const Calibrate = ({ elapsedTime }) => {
         <div>
           <h1>Calibrations</h1>
           <Chart 
-            measurement={measurements.find(measurement => measurement.name === selected)} 
+            measurement={calibrations.find(measurement => measurement.name === selected)} 
           />
           <MeasurementList 
-            measurements={measurements} 
+            measurements={calibrations} 
             selected={selected}
             setSelected={setSelected}
           />

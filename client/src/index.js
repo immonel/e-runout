@@ -8,12 +8,14 @@ import { Provider } from 'react-redux';
 import statusReducer from './reducers/statusReducer'
 import configReducer from './reducers/configReducer';
 import measurementsReducer from './reducers/measurementsReducer';
+import calibrationReducer from './reducers/calibrationReducer';
 
 const store = configureStore({
   reducer: {
     status: statusReducer,
     config: configReducer,
-    measurements: measurementsReducer
+    measurements: measurementsReducer,
+    calibrations: calibrationReducer
   }
 })
 

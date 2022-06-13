@@ -25,7 +25,7 @@ const MeasurementChart = ({ measurement }) => {
           const average = dataset.data.reduce((a, b) => a + b, 0) / dataset.data.length
           return {
             label: dataset.name,
-            data: dataset.data.map((data, i) => ({x: i, y: data})),
+            data: dataset.data.map((data, i) => ({x: i, y: data - average})),
             backgroundColor: chartColors[i % 3],
             borderColor: chartColors[i % 3]
         }})
