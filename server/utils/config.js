@@ -22,7 +22,10 @@ const handlers = (io, serial) => {
   })
 }
 
+const getConfig = () => config
+
 module.exports = {
   config,
+  getConfig,
   handlers
 }

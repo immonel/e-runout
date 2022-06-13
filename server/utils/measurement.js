@@ -1,5 +1,4 @@
 const status = require('./status').status
-const config = require('./config').config
 const statusInterval = 50
 
 let statusIntervalID
@@ -44,8 +43,10 @@ const stopMeasurement = () => {
 const log = (data) => console.log('[teensy]', data)
 
 const startMeasurement = () => {
+  const config = require('./config').getConfig()
   if (!status.running) {
     status.running = true
+    console.log(config)
 
     newMeasurement = {
       name: String(Date.now()),
