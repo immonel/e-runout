@@ -72,11 +72,38 @@ void checkStop() {
   }
 }
 
+void takeDataPoint() {
+  static int32_t heidenHain1Value;
+  static int16_t eddyValue;
+  
+  heidenHain1Value = heidenHain1.read();
+  eddyValue = readSPI();
+
+  /* 
+    Data point format:
+    +--------------------------------+----------------+----------------+
+    | TTL sensor                     | Eddy probe     | Cycle          |
+    | 32 bits                        | 16 bits        | 16 bits        |
+    +--------------------------------+----------------+----------------+
+  */
+  uint64_t dataPoint =
+    ((uint64_t) heidenHain1Value << 32) |
+    ((uint64_t) eddyValue        << 16) |
+    (uint64_t)  heidenHain2.indexCounter;
+
+  // Serial.printf("HH1: %d\tHH2: %d\tEddy: %d\tCycle: %d\n", 
+  //   heidenHain1Value, 
+  //   heidenHain2Value, 
+  //   eddyValue,
+  //   heidenHain2.indexCounter);
+  // Serial.printf("%016llx\n", dataPoint);
+
+  Serial.println(dataPoint);
+}
+
 void measure(size_t cycles) {
   running = true;
-  int32_t heidenHain1Value;
   int32_t heidenHain2Value;
-  int16_t eddyValue;
 
   // Reset rotary encoder
   heidenHain2.write(0);
@@ -89,29 +116,7 @@ void measure(size_t cycles) {
 
     if (heidenHain2.indexCounter > 0) {
       if (heidenHain2Value > maxEncoderValue) {
-        heidenHain1Value = heidenHain1.read();
-        eddyValue = readSPI();
-
-        /* 
-          Data point format:
-          +--------------------------------+----------------+----------------+
-          | TTL sensor                     | Eddy probe     | Cycle          |
-          | 32 bits                        | 16 bits        | 16 bits        |
-          +--------------------------------+----------------+----------------+
-        */
-        uint64_t dataPoint =
-          ((uint64_t) heidenHain1Value << 32) |
-          ((uint64_t) eddyValue        << 16) |
-          (uint64_t)  heidenHain2.indexCounter;
-
-        // Serial.printf("HH1: %d\tHH2: %d\tEddy: %d\tCycle: %d\n", 
-        //   heidenHain1Value, 
-        //   heidenHain2Value, 
-        //   eddyValue,
-        //   heidenHain2.indexCounter);
-        // Serial.printf("%016llx\n", dataPoint);
-
-        Serial.println(dataPoint);
+        takeDataPoint();
         maxEncoderValue = heidenHain2Value;
       }
     } else {
@@ -122,6 +127,20 @@ void measure(size_t cycles) {
     checkStop();
   }
   stopMeasurement();
+}
+
+void calibrate() {
+  running = true;
+  int32_t heidenHain2Value;
+  int32_t prevEncoderValue = 0;
+  while (running) {
+    heidenHain2Value = abs(heidenHain2.read());
+    if (heidenHain2Value != prevEncoderValue) {
+      takeDataPoint();
+      prevEncoderValue = heidenHain2Value;
+    }
+    checkStop();
+  }
 }
 
 void reboot() {
@@ -147,7 +166,15 @@ void loop() {
       } else {
         measure(cycle_count);
       }
-    } 
+    }
+    else if (command == "SAMPLE")
+    {
+      takeDataPoint();
+    }
+    else if (command == "CALIBRATE")
+    {
+      calibrate();
+    }
     else if (command == "STOP") 
     {
       stopMeasurement();
