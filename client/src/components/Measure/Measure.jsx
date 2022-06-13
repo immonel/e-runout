@@ -1,17 +1,17 @@
-import './Calibrate.css'
+import './Measure.css'
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Row } from 'react-bootstrap'
 import { socket } from '../../socket'
 import { baseUrl } from '../../config'
 import axios from 'axios'
 import MeasurementList from '../MeasurementList'
-import Chart from './CalibrationChart'
+import Chart from './MeasurementChart'
 import DeviceStatus from '../DeviceStatus'
-import CalibrationControls from './CalibrationControls'
+import MeasurementControls from './MeasurementControls'
 
 const path = `${baseUrl}/api/measurements`
 
-const Calibrate = ({ deviceConfig, deviceStatus, elapsedTime, setConfig }) => {
+const Measure = ({ deviceConfig, deviceStatus, elapsedTime, setConfig }) => {
   const [ selected, setSelected ] = useState('')
   const [ measurements, setMeasurements ] = useState([])
 
@@ -25,6 +25,14 @@ const Calibrate = ({ deviceConfig, deviceStatus, elapsedTime, setConfig }) => {
           data: dataset.data.map(dataPoint => dataPoint * dataset.coefficient)
         }))
       }
+      /* Add electrical runout */
+      processedMeasurement.datasets.push({
+        name: 'Electrical runout',
+        coefficient: 1,
+        data: processedMeasurement.datasets[0].data.map((dataPoint, i) => (
+          Math.abs(dataPoint - processedMeasurement.datasets[1].data[i])
+        ))
+      })
       return processedMeasurement
     })
   )
@@ -42,15 +50,15 @@ const Calibrate = ({ deviceConfig, deviceStatus, elapsedTime, setConfig }) => {
     <Row>
       <Col xs={12} md={12} lg={6}>
         <DeviceStatus deviceStatus={deviceStatus} elapsedTime={elapsedTime} />
-        <CalibrationControls
+        <MeasurementControls
           deviceConfig={deviceConfig}
           deviceStatus={deviceStatus}
           setConfig={setConfig}
         />
       </Col>
-      <Col xs={12} md={12} lg={6}>     
+      <Col xs={12} md={12} lg={6}>    
         <div>
-          <h1>Calibrations</h1>
+          <h1>Measurements</h1>
           <Chart 
             measurement={measurements.find(measurement => measurement.name === selected)} 
           />
@@ -75,4 +83,4 @@ const Calibrate = ({ deviceConfig, deviceStatus, elapsedTime, setConfig }) => {
   )
 }
 
-export default Calibrate
+export default Measure

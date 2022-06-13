@@ -1,5 +1,5 @@
 import { Chart } from 'react-chartjs-2'
-import './Chart.css'
+import './MeasurementChart.css'
 
 const chartColors = [
   'rgba(54, 162, 235, 0.7)',
@@ -14,7 +14,7 @@ const emptyData = () => ({
   }]
 })
 
-const _Chart = ({ measurement }) => {
+const MeasurementChart = ({ measurement }) => {
 
   const config = {
     type: 'line',  
@@ -25,7 +25,7 @@ const _Chart = ({ measurement }) => {
           const average = dataset.data.reduce((a, b) => a + b, 0) / dataset.data.length
           return {
             label: dataset.name,
-            data: dataset.data.map((data, i) => ({x: i, y: data - average})),
+            data: dataset.data.map((data, i) => ({x: i, y: data})),
             backgroundColor: chartColors[i % 3],
             borderColor: chartColors[i % 3]
         }})
@@ -51,4 +51,4 @@ const _Chart = ({ measurement }) => {
   )
 }
 
-export default _Chart
+export default MeasurementChart
