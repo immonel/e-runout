@@ -8,6 +8,8 @@ let status = {
 
 const handlers = (io, serial) => {
   io.on('connection', (socket) => {
+    socket.emit('GET_STATUS', status)
+    
     socket.on('GET_STATUS', () => {
       socket.emit('GET_STATUS', status)
     })

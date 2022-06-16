@@ -4,15 +4,16 @@ const statusInterval = 50
 let statusIntervalID
 
 let measurements = []
+let calibrations = []
 let io
 let serial
 let parser
 
 let newMeasurement
 
-const addNewDataPoint = (x, y) => {
-  newMeasurement.datasets[0].data.push(x)
-  newMeasurement.datasets[1].data.push(y)
+const addNewDataPoint = (measurement, x, y) => {
+  measurement.datasets[0].data.push(x)
+  measurement.datasets[1].data.push(y)
   status.dataPoints += 1
 }
 
@@ -22,7 +23,7 @@ const readValue = (data) => {
   if (!isNaN(data)) {
     const sensor1value = Number(BigInt.asIntN(32, BigInt(data) >> 32n))
     const sensor2value = (data >>> 16) & 0xffff
-    addNewDataPoint(sensor1value, sensor2value)
+    addNewDataPoint(newMeasurement, sensor1value, sensor2value)
   }
 }
 
@@ -33,16 +34,22 @@ const stopMeasurement = () => {
     status.running = false
     status.dataPoints = 0
     status.sampleSpeed = 0
-    measurements.push(newMeasurement)
+
+    if (newMeasurement.type === 'measurement') {
+      measurements.push(newMeasurement)
+      io.emit('GET_MEASUREMENTS', measurements)
+    } else if (newMeasurement.type === 'calibration') {
+      calibrations.push(newMeasurement)
+      io.emit('GET_CALIBRATIONS', calibrations)
+    }
     console.log(`Created a new measurement '${newMeasurement.name}' (${newMeasurement.datasets[0].data.length} samples)`)
     clearInterval(statusIntervalID)
     io.emit('GET_STATUS', status)
-    io.emit('GET_MEASUREMENTS', measurements)
   }
 }
 const log = (data) => console.log('[teensy]', data)
 
-const startMeasurement = () => {
+const startMeasurement = (type) => {
   const config = require('./config').getConfig()
   if (!status.running) {
     status.running = true
@@ -51,6 +58,7 @@ const startMeasurement = () => {
     newMeasurement = {
       name: String(Date.now()),
       created: new Date(Date.now()),
+      type,
       datasets: [
         {
           name: config.ttlSensorName,
@@ -65,9 +73,24 @@ const startMeasurement = () => {
       ]
     }
     console.log(`Started a new measurement '${newMeasurement.name}'`)
-    serial.write(`START ${config.cycleCount}`)
     parser.on('data', readValue)
     
+    if (type === 'calibration') {
+      switch (config.sampleMode) {
+        case 'continuous':
+          serial.write('SAMPLE_UNTIL')
+          break
+        case 'cycles':
+          serial.write(`SAMPLE_CYCLES ${config.cycleCount}`)
+          break
+        case 'once':
+        default:
+          serial.write('SAMPLE_ONCE')
+          break
+      }
+    } else {
+      serial.write(`SAMPLE_CYCLES ${config.cycleCount}`)
+    }
 
     statusIntervalID = setInterval(() => {
       const elapsedTime = Date.now() - Date.parse(newMeasurement.created)
@@ -99,7 +122,12 @@ const handlers = (_io, _serial, _parser) => {
 
     socket.on('START_MEASUREMENT', () => {
       console.log('Socket IO: Received request to start measuring')
-      startMeasurement()
+      startMeasurement('measurement')
+    })
+
+    socket.on('START_CALIBRATION', () => {
+      console.log('Socket IO: Received request to start calibration')
+      startMeasurement('calibration')
     })
 
     socket.on('STOP_MEASUREMENT', () => {

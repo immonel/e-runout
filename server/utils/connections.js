@@ -4,13 +4,11 @@ let connectionIntervalID
 
 const handlers = (io, serial) => {
 
-  const restartDevice = () => serial.write('RESTART')
+  const rebootDevice = () => serial.write('REBOOT')
   const zeroEncoder = () => serial.write('ZERO')
 
   io.on('connection', (socket) => {
     console.log('New client connected')
-    socket.emit('GET_STATUS', status)
-    socket.emit('GET_CONFIG', config)
 
     socket.on("disconnect", () => {
       console.log("Client disconnected")
@@ -18,7 +16,7 @@ const handlers = (io, serial) => {
 
     socket.on('RESTART_DEVICE', () => {
       console.log('Socket IO: Received a request to shut down teensy')
-      restartDevice()
+      rebootDevice()
     })
 
     socket.on('ZERO', () => {

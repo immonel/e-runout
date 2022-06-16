@@ -15,12 +15,12 @@ const Calibrate = ({ elapsedTime }) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    socket.on('GET_MEASUREMENTS', data => {
+    socket.on('GET_CALIBRATIONS', data => {
       dispatch(updateCalibrations(data))
       setSelected(data[0] ? data[0].name : '')
     })
 
-    return () => socket.off('GET_MEASUREMENTS')
+    return () => socket.off('GET_CALIBRATIONS')
   }, [ dispatch ])
 
   return (

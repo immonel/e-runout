@@ -1,8 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+const initialState = {
+  socketConnectionStatus: 'Connecting...',
+  serialConnectionStatus: 'Not available',
+  serialPath: '',
+  running: false,
+  dataPoints: 0,
+  sampleSpeed: 0,
+}
+
 const statusSlice = createSlice({
   name: 'status',
-  initialState: {},
+  initialState,
   reducers: {
     updateStatus(state, action) {
       return {

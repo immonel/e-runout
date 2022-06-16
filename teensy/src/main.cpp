@@ -4,7 +4,6 @@
 #include <SPI.h>
 
 #define SS_PIN 10
-#define CYCLE_SIZE 1024
 
 QuadEncoder heidenHain1(1, 1, 2);
 QuadEncoder heidenHain2(2, 3, 4, 0, 7);
@@ -101,14 +100,21 @@ void takeDataPoint() {
   Serial.println(dataPoint);
 }
 
-void measure(size_t cycles) {
+void sampleOnce() {
+  running = true;
+  heidenHain2.indexCounter = 1;
+  takeDataPoint();
+  stopMeasurement();
+}
+
+void sampleCycles(size_t cycles) {
   running = true;
   int32_t heidenHain2Value;
+  uint32_t maxEncoderValue = 0;
 
   // Reset rotary encoder
   heidenHain2.write(0);
   heidenHain2.indexCounter = 0;
-  uint32_t maxEncoderValue = 0;
 
   while (running) {
     heidenHain2Value = abs(heidenHain2.read());
@@ -129,8 +135,9 @@ void measure(size_t cycles) {
   stopMeasurement();
 }
 
-void calibrate() {
+void sampleUntilStop() {
   running = true;
+  heidenHain2.indexCounter = 1;
   int32_t heidenHain2Value;
   int32_t prevEncoderValue = 0;
   while (running) {
@@ -144,6 +151,7 @@ void calibrate() {
 }
 
 void reboot() {
+  Serial.println("Restarting...");
   Serial.end();
   SCB_AIRCR = 0x05FA0004;
 }
@@ -156,32 +164,31 @@ void loop() {
     std::string command;
     ss >> command;
 
-    if (command == "START") 
+    if (command == "SAMPLE_CYCLES")
     {
       size_t cycle_count;
       ss >> cycle_count;
       if (ss.fail()) {
         Serial.println("Invalid arguments.");
-        Serial.println("USAGE: START <cycle count>");
+        Serial.println("USAGE: SAMPLE_CYCLES <cycle count>");
       } else {
-        measure(cycle_count);
+        sampleCycles(cycle_count);
       }
     }
-    else if (command == "SAMPLE")
+    else if (command == "SAMPLE_ONCE")
     {
-      takeDataPoint();
+      sampleOnce();
     }
-    else if (command == "CALIBRATE")
+    else if (command == "SAMPLE_UNTIL")
     {
-      calibrate();
+      sampleUntilStop();
     }
     else if (command == "STOP") 
     {
       stopMeasurement();
     }
-    else if (command == "RESTART")
+    else if (command == "REBOOT")
     {
-      Serial.println("Restarting...");
       reboot();
     }
     else if (command == "ZERO")
@@ -192,8 +199,8 @@ void loop() {
     else 
     {
       Serial.println("Invalid command.");
-      Serial.println("Available commands:");
-      Serial.println("START <cycle count>\tSTOP\tRESTART");
+      // Serial.println("Available commands:");
+      // Serial.println("START <cycle count>\tSTOP\tRESTART");
     }
   }
 }

@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react'
 import { ButtonGroup, Card, Col, Row, Table, ToggleButton } from 'react-bootstrap'
 import { BsPlayFill, BsStopFill } from 'react-icons/bs'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setConfig } from '../../reducers/configReducer'
 import { socket } from '../../socket'
 import SettingInput from '../SettingInput'
 
@@ -10,9 +11,11 @@ import SettingInput from '../SettingInput'
 const CalibrationControls = () => {
   const deviceStatus = useSelector(state => state.status)
   const deviceConfig = useSelector(state => state.config)
+  const sampleMode = deviceConfig.sampleMode
+  const dispatch = useDispatch()
 
   const handleStartMeasurement = useCallback(() => {
-    socket.emit('START_MEASUREMENT')
+    socket.emit('START_CALIBRATION')
     // setStartTime(Date.now())
   }, [])
   
@@ -73,6 +76,29 @@ const CalibrationControls = () => {
             </tr>
           </tbody>
         </Table>
+        <ButtonGroup>
+          <ToggleButton 
+            checked={sampleMode === 'once'}
+            variant={sampleMode === 'once' ? 'primary' : 'outline-primary'}
+            onClick={() => dispatch(setConfig({sampleMode: 'once'}))}
+          >
+            Sample once
+          </ToggleButton>
+          <ToggleButton 
+            checked={sampleMode === 'continuous'}
+            variant={sampleMode === 'continuous' ? 'primary' : 'outline-primary'}
+            onClick={() => dispatch(setConfig({sampleMode: 'continuous'}))}
+          >
+            Until stop
+          </ToggleButton>
+          <ToggleButton 
+            checked={sampleMode === 'cycles'}
+            variant={sampleMode === 'cycles' ? 'primary' : 'outline-primary'}
+            onClick={() => dispatch(setConfig({sampleMode: 'cycles'}))}
+          >
+            Cycles
+          </ToggleButton>
+        </ButtonGroup>
         <ButtonGroup className='status-buttons'>
             <ToggleButton
               className='status-button'
