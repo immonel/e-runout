@@ -55,6 +55,15 @@ const readValue = (data, measurement) => {
   }
 }
 
+const handleStartMeasurement = () => {
+  status.running = true
+  status.startTime = Date.now()
+
+  statusIntervalID = setInterval(() => {
+    io.emit('GET_STATUS', status)
+  }, statusInterval)
+}
+
 const handleFinishMeasurement = () => {
   parser.removeAllListeners('data')
   status.running = false
@@ -79,7 +88,7 @@ const addToCalibration = (calibrationName) => {
   const config = getConfig()
   const calibration = calibrations.find(calibration => calibration.name === calibrationName)
   if (calibration && !status.running) {
-    status.running = true
+    handleStartMeasurement()
     const parserCallback = (data) => readValue(data, calibration)
     parser.on('data', parserCallback)
 
@@ -95,28 +104,19 @@ const addToCalibration = (calibrationName) => {
         serial.write('SAMPLE_ONCE')
         break
     }
-
-    statusIntervalID = setInterval(() => {
-      io.emit('GET_STATUS', status)
-    }, statusInterval)
   }
 }
 
 const startMeasurement = () => {
   const config = getConfig()
   if (!status.running) {
-    status.running = true
-
+    handleStartMeasurement()
     const newMeasurement = createMeasurement(String(Date.now()), 'measurement')
     measurements.push(newMeasurement)
     console.log(`Started a new measurement '${newMeasurement.name}'`)
     const parserCallback = (data) => readValue(data, newMeasurement)
     parser.on('data', parserCallback)
     serial.write(`SAMPLE_CYCLES ${config.cycleCount}`)
-
-    statusIntervalID = setInterval(() => {
-      io.emit('GET_STATUS', status)
-    }, statusInterval)
   }
 }
 
