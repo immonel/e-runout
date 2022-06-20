@@ -1,3 +1,4 @@
+const { getConfig } = require('./config')
 const status = require('./status').status
 const statusInterval = 50
 
@@ -9,88 +10,111 @@ let io
 let serial
 let parser
 
-let newMeasurement
-
 const addNewDataPoint = (measurement, x, y) => {
   measurement.datasets[0].data.push(x)
   measurement.datasets[1].data.push(y)
   status.dataPoints += 1
 }
 
-const readValue = (data) => {
+const createMeasurement = (name, type) => {
+  const config = getConfig()
+  return {
+    name,
+    created: new Date(Date.now()),
+    type,
+    datasets: [
+      {
+        name: config.ttlSensorName,
+        coefficient: config.ttlSensorCoefficient,
+        data: []
+      },
+      {
+        name: config.eddySensorName,
+        coefficient: config.eddySensorCoefficient,
+        data: []
+      }
+    ]
+  }
+}
+
+const createNewCalibration = () => {
+  calibrations.push(createMeasurement(String(Date.now()), 'calibration'))
+  io.emit('GET_CALIBRATIONS', calibrations)
+}
+
+const readValue = (data, measurement) => {
   // console.log(data)
-  if (data == 0) stopMeasurement()
+  if (data == 0) {
+    handleFinishMeasurement()
+    return
+  }
   if (!isNaN(data)) {
     const sensor1value = Number(BigInt.asIntN(32, BigInt(data) >> 32n))
     const sensor2value = (data >>> 16) & 0xffff
-    addNewDataPoint(newMeasurement, sensor1value, sensor2value)
+    addNewDataPoint(measurement, sensor1value, sensor2value)
   }
+}
+
+const handleFinishMeasurement = () => {
+  parser.removeAllListeners('data')
+  status.running = false
+  status.dataPoints = 0
+  status.sampleSpeed = 0
+
+  clearInterval(statusIntervalID)
+  io.emit('GET_STATUS', status)
+  io.emit('GET_MEASUREMENTS', measurements)
+  io.emit('GET_CALIBRATIONS', calibrations)
 }
 
 const stopMeasurement = () => {
   if (status.running) {
     serial.write('STOP')
-    parser.removeListener('data', readValue)
-    status.running = false
-    status.dataPoints = 0
-    status.sampleSpeed = 0
-
-    if (newMeasurement.type === 'measurement') {
-      measurements.push(newMeasurement)
-      io.emit('GET_MEASUREMENTS', measurements)
-    } else if (newMeasurement.type === 'calibration') {
-      calibrations.push(newMeasurement)
-      io.emit('GET_CALIBRATIONS', calibrations)
-    }
-    console.log(`Created a new measurement '${newMeasurement.name}' (${newMeasurement.datasets[0].data.length} samples)`)
-    clearInterval(statusIntervalID)
-    io.emit('GET_STATUS', status)
+    handleFinishMeasurement()
   }
 }
 const log = (data) => console.log('[teensy]', data)
 
-const startMeasurement = (type) => {
-  const config = require('./config').getConfig()
+const addToCalibration = (calibrationName) => {
+  const config = getConfig()
+  const calibration = calibrations.find(calibration => calibration.name === calibrationName)
+  if (calibration && !status.running) {
+    status.running = true
+    const parserCallback = (data) => readValue(data, calibration)
+    parser.on('data', parserCallback)
+
+    switch (config.sampleMode) {
+      case 'continuous':
+        serial.write('SAMPLE_UNTIL')
+        break
+      case 'cycles':
+        serial.write(`SAMPLE_CYCLES ${config.cycleCount}`)
+        break
+      case 'once':
+      default:
+        serial.write('SAMPLE_ONCE')
+        break
+    }
+
+    statusIntervalID = setInterval(() => {
+      const elapsedTime = Date.now() - Date.parse(calibration.created)
+      status.sampleSpeed = Math.round(status.dataPoints / (elapsedTime / 1000))
+      io.emit('GET_STATUS', status)
+    }, statusInterval)
+  }
+}
+
+const startMeasurement = () => {
+  const config = getConfig()
   if (!status.running) {
     status.running = true
-    console.log(config)
 
-    newMeasurement = {
-      name: String(Date.now()),
-      created: new Date(Date.now()),
-      type,
-      datasets: [
-        {
-          name: config.ttlSensorName,
-          coefficient: config.ttlSensorCoefficient,
-          data: []
-        },
-        {
-          name: config.eddySensorName,
-          coefficient: config.eddySensorCoefficient,
-          data: []
-        }
-      ]
-    }
+    const newMeasurement = createMeasurement(String(Date.now()), 'measurement')
+    measurements.push(newMeasurement)
     console.log(`Started a new measurement '${newMeasurement.name}'`)
-    parser.on('data', readValue)
-    
-    if (type === 'calibration') {
-      switch (config.sampleMode) {
-        case 'continuous':
-          serial.write('SAMPLE_UNTIL')
-          break
-        case 'cycles':
-          serial.write(`SAMPLE_CYCLES ${config.cycleCount}`)
-          break
-        case 'once':
-        default:
-          serial.write('SAMPLE_ONCE')
-          break
-      }
-    } else {
-      serial.write(`SAMPLE_CYCLES ${config.cycleCount}`)
-    }
+    const parserCallback = (data) => readValue(data, newMeasurement)
+    parser.on('data', parserCallback)
+    serial.write(`SAMPLE_CYCLES ${config.cycleCount}`)
 
     statusIntervalID = setInterval(() => {
       const elapsedTime = Date.now() - Date.parse(newMeasurement.created)
@@ -119,15 +143,21 @@ const handlers = (_io, _serial, _parser) => {
 
   io.on('connection', (socket) => {
     socket.emit('GET_MEASUREMENTS', measurements)
+    socket.emit('GET_CALIBRATIONS', calibrations)
 
     socket.on('START_MEASUREMENT', () => {
       console.log('Socket IO: Received request to start measuring')
-      startMeasurement('measurement')
+      startMeasurement()
     })
 
-    socket.on('START_CALIBRATION', () => {
-      console.log('Socket IO: Received request to start calibration')
-      startMeasurement('calibration')
+    socket.on('CREATE_CALIBRATION', () => {
+      console.log('Socket IO: Creating a new empty calibration')
+      createNewCalibration()
+    })
+
+    socket.on('APPEND_CALIBRATION', (calibrationName) => {
+      console.log(`Socket IO: Appending to existing calibration ${calibrationName}`)
+      addToCalibration(calibrationName)
     })
 
     socket.on('STOP_MEASUREMENT', () => {
@@ -136,9 +166,9 @@ const handlers = (_io, _serial, _parser) => {
     })
 
     socket.on('DELETE_MEASUREMENT', (message) => {
-        console.log('Socket IO: Received request to delete ', message.value)
-        deleteMeasurement(message)
-        socket.emit('GET_MEASUREMENTS', measurements)
+      console.log('Socket IO: Received request to delete ', message.value)
+      deleteMeasurement(message)
+      socket.emit('GET_MEASUREMENTS', measurements)
     })
 
     socket.on('DELETE_MEASUREMENTS', () => {
