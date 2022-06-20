@@ -45,8 +45,8 @@ const DeviceStatus = ({ elapsedTime }) => {
                 '0m 0s'}</td>
             </tr>
             <tr>
-              <td>Sample speed:</td>
-              <td>{status.sampleSpeed}/s ({status.dataPoints} total samples)</td>
+              <td>Samples taken:</td>
+              <td>{status.dataPoints} sample{status.dataPoints !== 1 && 's'}</td>
             </tr>
           </tbody>
         </Table>

@@ -59,7 +59,6 @@ const handleFinishMeasurement = () => {
   parser.removeAllListeners('data')
   status.running = false
   status.dataPoints = 0
-  status.sampleSpeed = 0
 
   clearInterval(statusIntervalID)
   io.emit('GET_STATUS', status)
@@ -97,8 +96,6 @@ const addToCalibration = (calibrationName) => {
     }
 
     statusIntervalID = setInterval(() => {
-      const elapsedTime = Date.now() - Date.parse(calibration.created)
-      status.sampleSpeed = Math.round(status.dataPoints / (elapsedTime / 1000))
       io.emit('GET_STATUS', status)
     }, statusInterval)
   }
@@ -117,8 +114,6 @@ const startMeasurement = () => {
     serial.write(`SAMPLE_CYCLES ${config.cycleCount}`)
 
     statusIntervalID = setInterval(() => {
-      const elapsedTime = Date.now() - Date.parse(newMeasurement.created)
-      status.sampleSpeed = Math.round(status.dataPoints / (elapsedTime / 1000))
       io.emit('GET_STATUS', status)
     }, statusInterval)
   }

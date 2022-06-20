@@ -5,8 +5,7 @@ const initialState = {
   serialConnectionStatus: 'Not available',
   serialPath: '',
   running: false,
-  dataPoints: 0,
-  sampleSpeed: 0,
+  dataPoints: 0
 }
 
 const statusSlice = createSlice({
