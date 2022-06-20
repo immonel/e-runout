@@ -1,7 +1,7 @@
 /* eslint-disable-next-line */
 import { Chart as ChartJS } from 'chart.js/auto'
 import './App.css'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Container, Tab, Tabs } from 'react-bootstrap'
 import Navbar from './components/Navbar'
 import { socket } from './socket'
@@ -12,8 +12,6 @@ import { updateStatus } from './reducers/statusReducer'
 import { updateConfig } from './reducers/configReducer'
 
 const App = () => {
-  const [ startTime, setStartTime ] = useState(0)
-  const elapsedTime = new Date(Date.now() - startTime)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -47,14 +45,10 @@ const App = () => {
       <Container className='page-content'>
         <Tabs defaultActiveKey='measure' className='mb-4'>
           <Tab eventKey='measure' title='Measure'>
-            <Measure
-              elapsedTime={elapsedTime}
-            />
+            <Measure />
           </Tab>
           <Tab eventKey='calibrate' title='Calibrate'>
-            <Calibrate
-              elapsedTime={elapsedTime}
-            />
+            <Calibrate />
           </Tab>
         </Tabs>
       </Container>

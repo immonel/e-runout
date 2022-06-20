@@ -2,7 +2,8 @@ let status = {
   serialConnectionStatus: 'Connecting...',
   serialPath: '/dev/ttyACM0',
   running: false,
-  dataPoints: 0
+  dataPoints: 0,
+  startTime: 0
 }
 
 const handlers = (io, serial) => {

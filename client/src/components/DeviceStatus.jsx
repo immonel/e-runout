@@ -5,9 +5,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { socket } from '../socket'
 import { updateStatus } from '../reducers/statusReducer'
 
-const DeviceStatus = ({ elapsedTime }) => {
+const DeviceStatus = () => {
   const status = useSelector(state => state.status)
   const dispatch = useDispatch()
+  const elapsedTime = new Date(Date.now() - status.startTime)
 
   useEffect(() => {
     socket.on('GET_STATUS', (status) => {

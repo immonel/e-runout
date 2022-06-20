@@ -59,6 +59,7 @@ const handleFinishMeasurement = () => {
   parser.removeAllListeners('data')
   status.running = false
   status.dataPoints = 0
+  status.startTime = 0
 
   clearInterval(statusIntervalID)
   io.emit('GET_STATUS', status)
