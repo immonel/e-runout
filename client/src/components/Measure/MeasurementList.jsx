@@ -1,6 +1,6 @@
 import { ListGroup } from 'react-bootstrap'
 import './MeasurementList.css'
-import Measurement from './MeasurementListItem'
+import Measurement from '../MeasurementListItem'
 
 const MeasurementList = ({ measurements, selected, setSelected }) => (
   <ListGroup>
