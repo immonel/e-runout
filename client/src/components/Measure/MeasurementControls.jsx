@@ -21,7 +21,7 @@ const MeasurementControls = () => {
   return (
     <Card>
       <Card.Header>
-        Measurement controls
+        Create a new measurement
       </Card.Header>
       <Card.Body>
         <Table>
