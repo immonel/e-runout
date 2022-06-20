@@ -16,6 +16,9 @@ const CalibrationChart = ({ measurement }) => {
   const dispatch = useDispatch()
   let linregr = {}
   let linregrPoints = []
+  
+  const setCalibrationButtonDisabled = () =>
+    linregr.equation ? !linregr.equation[0] : true
 
   if (measurement) {
     linregr = regression.linear(
@@ -97,7 +100,10 @@ const CalibrationChart = ({ measurement }) => {
       <div className='chart'>
         <Chart { ...config } />
       </div>
-      <Button onClick={setAsCalibration} disabled={!measurement}>
+      <Button 
+        onClick={setAsCalibration}
+        disabled={setCalibrationButtonDisabled()}
+      >
         Use this calibration
       </Button>
     </>
