@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { ButtonGroup, Card, Col, Row, Table, ToggleButton } from 'react-bootstrap'
 import { BsPlayFill, BsStopFill } from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
@@ -8,23 +8,22 @@ import SettingInput from '../SettingInput'
 
 
 
-const CalibrationControls = () => {
+const CalibrationControls = ({ selectedCalibration }) => {
   const deviceStatus = useSelector(state => state.status)
   const deviceConfig = useSelector(state => state.config)
   const sampleMode = deviceConfig.sampleMode
   const dispatch = useDispatch()
 
-  const handleStartMeasurement = useCallback(() => {
-    socket.emit('START_CALIBRATION')
-    // setStartTime(Date.now())
-  }, [])
+  const addToCalibration = (calibrationName) =>
+    socket.emit('APPEND_CALIBRATION', calibrationName)
   
-  const handleStopMeasurement = useCallback(() => socket.emit('STOP_MEASUREMENT'), [])
+  const handleStopMeasurement = () =>
+    socket.emit('STOP_MEASUREMENT')
 
   return (
     <Card>
       <Card.Header>
-        Calibration controls
+        Add data points to selected calibration
       </Card.Header>
       <Card.Body>
         <Table>
@@ -106,7 +105,7 @@ const CalibrationControls = () => {
               type='radio'
               checked={deviceStatus.running}
               variant="outline-success"
-              onClick={handleStartMeasurement}
+              onClick={() => addToCalibration(selectedCalibration)}
             >
               <BsPlayFill />Start
             </ToggleButton>

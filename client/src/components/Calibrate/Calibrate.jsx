@@ -2,12 +2,12 @@ import './Calibrate.css'
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Row } from 'react-bootstrap'
 import { socket } from '../../socket'
-import MeasurementList from '../MeasurementList'
 import Chart from './CalibrationChart'
 import DeviceStatus from '../DeviceStatus'
 import CalibrationControls from './CalibrationControls'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateCalibrations } from '../../reducers/calibrationReducer'
+import CalibrationList from './CalibrationList'
 
 const Calibrate = ({ elapsedTime }) => {
   const [ selected, setSelected ] = useState('')
@@ -27,7 +27,7 @@ const Calibrate = ({ elapsedTime }) => {
     <Row>
       <Col xs={12} md={12} lg={6}>
         <DeviceStatus elapsedTime={elapsedTime} />
-        <CalibrationControls />
+        <CalibrationControls selectedCalibration={selected} />
       </Col>
       <Col xs={12} md={12} lg={6}>     
         <div>
@@ -35,8 +35,8 @@ const Calibrate = ({ elapsedTime }) => {
           <Chart 
             measurement={calibrations.find(measurement => measurement.name === selected)} 
           />
-          <MeasurementList 
-            measurements={calibrations} 
+          <CalibrationList 
+            calibrations={calibrations} 
             selected={selected}
             setSelected={setSelected}
           />
