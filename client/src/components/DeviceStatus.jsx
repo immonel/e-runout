@@ -1,4 +1,3 @@
-import './DeviceStatus.css'
 import React, { useEffect } from 'react'
 import { Card, Row, Table } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'

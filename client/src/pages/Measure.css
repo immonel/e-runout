@@ -1,0 +1,36 @@
+.list-group {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.list-info {
+  display: flex;
+  margin-left: 10px;
+  margin-right: 10px;
+  justify-content: space-between;
+}
+
+.erase-button {
+  width: 100%;
+  margin-bottom: 6em;
+}
+
+.measurement-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-group-item.active {
+  background-color: #eeeeee;
+  border-color: lightgray;
+  color: black;
+}
+
+.text-details {
+  color: darkgray;
+}
+
+.chart {
+  min-height: 300px;
+}

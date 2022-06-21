@@ -1,5 +1,4 @@
 import { Chart } from 'react-chartjs-2'
-import './MeasurementChart.css'
 
 const chartColors = [
   'rgba(54, 162, 235, 0.7)',

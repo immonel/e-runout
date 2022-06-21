@@ -1,9 +1,8 @@
 import { Button } from 'react-bootstrap'
 import { Chart } from 'react-chartjs-2'
 import { useDispatch } from 'react-redux'
-import regression from 'regression'
 import { setConfig } from '../../reducers/configReducer'
-import './CalibrationChart.css'
+import regression from 'regression'
 
 const emptyData = () => ({
   datasets: [{
@@ -16,7 +15,7 @@ const CalibrationChart = ({ measurement }) => {
   const dispatch = useDispatch()
   let linregr = {}
   let linregrPoints = []
-  
+
   const setCalibrationButtonDisabled = () =>
     linregr.equation ? !linregr.equation[0] : true
 

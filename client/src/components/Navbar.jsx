@@ -1,10 +1,5 @@
 import React from 'react'
-import './Navbar.css'
-import { 
-  Navbar,
-  Container,
-  Image
-} from 'react-bootstrap'
+import { Navbar, Container, Image } from 'react-bootstrap'
 
 const _Navbar = () => (
   <Navbar bg="light" expand="lg">

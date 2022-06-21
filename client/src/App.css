@@ -1,3 +1,29 @@
 .page-content {
   margin-top: 1em;
 }
+
+.navbar {
+  padding: 0px;
+}
+
+.status-buttons {
+  float: right;
+  vertical-align: middle;
+}
+
+.device-status {
+  margin-bottom: 2em;
+}
+
+.status-button {
+  display: flex;
+  align-items: center;
+}
+
+.status-button > svg {
+  margin-right: 10px;
+}
+
+.table > tbody > tr > td {
+  vertical-align: middle;
+}

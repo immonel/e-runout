@@ -1,4 +1,3 @@
-import './MeasurementListItem.css'
 import React from 'react'
 import { Button, ButtonGroup, Row } from 'react-bootstrap'
 import { BsDownload, BsTrash, BsFileEarmarkText } from 'react-icons/bs'
