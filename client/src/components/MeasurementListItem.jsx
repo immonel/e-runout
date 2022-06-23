@@ -2,9 +2,12 @@ import React from 'react'
 import { Button, ButtonGroup, Row } from 'react-bootstrap'
 import { BsDownload, BsTrash, BsFileEarmarkText } from 'react-icons/bs'
 import { socket } from '../socket'
-import { baseUrl } from '../config'
 
-const path = `${baseUrl}/api/measurements`
+const createBlobUrl = (data) => {
+  return URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {
+    type: 'application/json'
+  }))
+}
 
 const handleDeleteMeasurement = (event, id) => {
   event.stopPropagation()
@@ -19,13 +22,14 @@ const ActionButtons = ({ measurement }) => (
       <BsTrash />
     </Button>
     <Button variant='outline-secondary'
-      href={`${path}/${measurement.name}`}
+      href={createBlobUrl(measurement)}
       onClick={(event) => event.stopPropagation()}
     >
       <BsFileEarmarkText />
     </Button>
-    <Button variant='outline-secondary' download
-      href={`${path}/${measurement.name}?download=1`}
+    <Button variant='outline-secondary'
+      download={`${measurement.name}.json`}
+      href={createBlobUrl(measurement)}
       onClick={(event) => event.stopPropagation()}
     >
       <BsDownload />
