@@ -129,9 +129,11 @@ const startMeasurement = (opts) => {
 
 const getMeasurements = () => measurements
 
-const deleteMeasurements = () => {
-  measurements = []
-  console.log("Deleted all measurements")
+const deleteMeasurementsOfType = (type) => {
+  measurements = measurements.filter(measurement => (
+    measurement.type !== type
+  ))
+  console.log(`Deleted all measurements of type ${type}`)
 }
 
 const deleteMeasurement = (name) => {
@@ -174,8 +176,14 @@ const handlers = (_io, _serial, _parser) => {
     })
 
     socket.on('DELETE_MEASUREMENTS', () => {
-      console.log('Socket IO: Received request to delete everything!')
-      deleteMeasurements()
+      console.log('Socket IO: Received request to delete measurements!')
+      deleteMeasurementsOfType('measurement')
+      socket.emit('GET_MEASUREMENTS', measurements)
+    })
+
+    socket.on('DELETE_CALIBRATIONS', () => {
+      console.log('Socket IO: Received request to delete calibrations!')
+      deleteMeasurementsOfType('calibration')
       socket.emit('GET_MEASUREMENTS', measurements)
     })
   })
