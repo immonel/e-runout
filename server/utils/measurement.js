@@ -1,4 +1,5 @@
 const { getConfig } = require('./config')
+const { v4: uuidv4 } = require('uuid');
 const status = require('./status').status
 const statusInterval = 50
 
@@ -16,12 +17,12 @@ const addNewDataPoint = (measurement, x, y) => {
   status.dataPoints += 1
 }
 
-const createMeasurement = (name, type) => {
+const createMeasurement = (opts) => {
   const config = getConfig()
   return {
-    name,
+    ...opts,
     created: new Date(Date.now()),
-    type,
+    id: uuidv4(),
     datasets: [
       {
         name: config.ttlSensorName,
@@ -37,9 +38,13 @@ const createMeasurement = (name, type) => {
   }
 }
 
-const createNewCalibration = () => {
-  calibrations.push(createMeasurement(String(Date.now()), 'calibration'))
-  io.emit('GET_CALIBRATIONS', calibrations)
+const createNewCalibration = (opts) => {
+  measurements.push(createMeasurement({
+    name: String(Date.now()),
+    type: 'calibration',
+    ...opts
+  }))
+  io.emit('GET_MEASUREMENTS', measurements)
 }
 
 const readValue = (data, measurement) => {
@@ -107,11 +112,15 @@ const addToCalibration = (calibrationName) => {
   }
 }
 
-const startMeasurement = () => {
+const startMeasurement = (opts) => {
   const config = getConfig()
   if (!status.running) {
     handleStartMeasurement()
-    const newMeasurement = createMeasurement(String(Date.now()), 'measurement')
+    const newMeasurement = createMeasurement({
+      name: String(Date.now()),
+      type: 'measurement',
+      ...opts
+    })
     measurements.push(newMeasurement)
     console.log(`Started a new measurement '${newMeasurement.name}'`)
     const parserCallback = (data) => readValue(data, newMeasurement)
@@ -141,14 +150,14 @@ const handlers = (_io, _serial, _parser) => {
     socket.emit('GET_MEASUREMENTS', measurements)
     socket.emit('GET_CALIBRATIONS', calibrations)
 
-    socket.on('START_MEASUREMENT', () => {
+    socket.on('START_MEASUREMENT', (opts) => {
       console.log('Socket IO: Received request to start measuring')
-      startMeasurement()
+      startMeasurement(opts)
     })
 
-    socket.on('CREATE_CALIBRATION', () => {
+    socket.on('CREATE_CALIBRATION', (opts) => {
       console.log('Socket IO: Creating a new empty calibration')
-      createNewCalibration()
+      createNewCalibration(opts)
     })
 
     socket.on('APPEND_CALIBRATION', (calibrationName) => {
