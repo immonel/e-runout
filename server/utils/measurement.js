@@ -6,7 +6,6 @@ const statusInterval = 50
 let statusIntervalID
 
 let measurements = []
-let calibrations = []
 let io
 let serial
 let parser
@@ -78,7 +77,6 @@ const handleFinishMeasurement = () => {
   clearInterval(statusIntervalID)
   io.emit('GET_STATUS', status)
   io.emit('GET_MEASUREMENTS', measurements)
-  io.emit('GET_CALIBRATIONS', calibrations)
 }
 
 const stopMeasurement = () => {
@@ -91,7 +89,7 @@ const log = (data) => console.log('[teensy]', data)
 
 const addToCalibration = (calibrationName) => {
   const config = getConfig()
-  const calibration = calibrations.find(calibration => calibration.name === calibrationName)
+  const calibration = measurements.find(calibration => calibration.name === calibrationName)
   if (calibration && !status.running) {
     handleStartMeasurement()
     const parserCallback = (data) => readValue(data, calibration)
@@ -148,7 +146,6 @@ const handlers = (_io, _serial, _parser) => {
 
   io.on('connection', (socket) => {
     socket.emit('GET_MEASUREMENTS', measurements)
-    socket.emit('GET_CALIBRATIONS', calibrations)
 
     socket.on('START_MEASUREMENT', (opts) => {
       console.log('Socket IO: Received request to start measuring')

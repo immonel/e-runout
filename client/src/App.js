@@ -10,6 +10,7 @@ import Measure from './pages/Measure'
 import { useDispatch } from 'react-redux'
 import { updateStatus } from './reducers/statusReducer'
 import { updateConfig } from './reducers/configReducer'
+import { updateMeasurements } from './reducers/measurementsReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -27,6 +28,10 @@ const App = () => {
         socketConnectionStatus: reason,
         serialConnectionStatus: 'Not available'
       }))
+    })
+
+    socket.on('GET_MEASUREMENTS', measurements => {
+      dispatch(updateMeasurements(measurements))
     })
 
     socket.on('GET_CONFIG', config => {

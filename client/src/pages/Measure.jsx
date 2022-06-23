@@ -1,27 +1,22 @@
 import './Measure.css'
 import React, { useEffect, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
-import { socket } from '../socket'
 import MeasurementList from '../components/Measure/MeasurementList'
 import Chart from '../components/Measure/MeasurementChart'
 import DeviceStatus from '../components/DeviceStatus'
 import MeasurementControls from '../components/Measure/MeasurementControls'
-import { updateMeasurements } from '../reducers/measurementsReducer'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 const Measure = () => {
   const [ selected, setSelected ] = useState('')
-  const measurements = useSelector(state => state.measurements)
-  const dispatch = useDispatch()
+  const measurements = useSelector(state => 
+    state.measurements.filter(measurement => measurement.type === 'measurement')
+  )
 
   useEffect(() => {
-    socket.on('GET_MEASUREMENTS', data => {
-      dispatch(updateMeasurements(data))
-      setSelected(data[0] ? data[0].name : '')
-    })
-
-    return () => socket.off('GET_MEASUREMENTS')
-  }, [ dispatch ])
+    const selectedIndex = measurements.length - 1
+    setSelected(measurements[selectedIndex] ? measurements[selectedIndex].name : '')
+  }, [ ])
 
   return (
     <Row>
