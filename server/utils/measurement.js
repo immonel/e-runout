@@ -87,9 +87,9 @@ const stopMeasurement = () => {
 }
 const log = (data) => console.log('[teensy]', data)
 
-const addToCalibration = (calibrationName) => {
+const addToCalibration = (id) => {
   const config = getConfig()
-  const calibration = measurements.find(calibration => calibration.name === calibrationName)
+  const calibration = measurements.find(calibration => calibration.id === id)
   if (calibration && !status.running) {
     handleStartMeasurement()
     const parserCallback = (data) => readValue(data, calibration)
@@ -136,9 +136,9 @@ const deleteMeasurementsOfType = (type) => {
   console.log(`Deleted all measurements of type ${type}`)
 }
 
-const deleteMeasurement = (name) => {
-  measurements = measurements.filter(measurement => measurement.name !== name)
-  console.log(`Deleted measurement '${name}'`)
+const deleteMeasurement = (id) => {
+  measurements = measurements.filter(measurement => measurement.id !== id)
+  console.log(`Deleted measurement '${id}'`)
 }
 
 const handlers = (_io, _serial, _parser) => {
@@ -159,9 +159,9 @@ const handlers = (_io, _serial, _parser) => {
       createNewCalibration(opts)
     })
 
-    socket.on('APPEND_CALIBRATION', (calibrationName) => {
-      console.log(`Socket IO: Appending to existing calibration ${calibrationName}`)
-      addToCalibration(calibrationName)
+    socket.on('APPEND_CALIBRATION', (id) => {
+      console.log(`Socket IO: Appending to existing calibration ${id}`)
+      addToCalibration(id)
     })
 
     socket.on('STOP_MEASUREMENT', () => {
@@ -169,9 +169,9 @@ const handlers = (_io, _serial, _parser) => {
       stopMeasurement()
     })
 
-    socket.on('DELETE_MEASUREMENT', (message) => {
-      console.log('Socket IO: Received request to delete ', message.value)
-      deleteMeasurement(message)
+    socket.on('DELETE_MEASUREMENT', (id) => {
+      console.log('Socket IO: Received request to delete measurement ', id)
+      deleteMeasurement(id)
       socket.emit('GET_MEASUREMENTS', measurements)
     })
 

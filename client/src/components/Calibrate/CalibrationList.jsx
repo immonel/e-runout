@@ -28,8 +28,8 @@ const CalibrationList = ({ calibrations, selected, setSelected }) => (
           [...calibrations].sort((x, y) => new Date(y.created) - new Date(x.created)).map((x, i) =>
             <ListGroup.Item
               action 
-              onClick={() => setSelected(x.name)} 
-              active={x.name === selected}
+              onClick={() => setSelected(x.id)} 
+              active={x.id === selected}
               key={i}
             >
               <Measurement measurement={x} />

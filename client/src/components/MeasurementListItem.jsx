@@ -6,13 +6,15 @@ import { baseUrl } from '../config'
 
 const path = `${baseUrl}/api/measurements`
 
+const handleDeleteMeasurement = (event, id) => {
+  event.stopPropagation()
+  socket.emit('DELETE_MEASUREMENT', id)
+}
+
 const ActionButtons = ({ measurement }) => (
   <ButtonGroup className='list-item-buttons'>
     <Button variant='outline-danger'
-      onClick={async (event) => {
-        event.stopPropagation()
-        socket.emit('DELETE_MEASUREMENT', measurement.name)
-      }}
+      onClick={(event) => handleDeleteMeasurement(event, measurement.id)}
     >
       <BsTrash />
     </Button>

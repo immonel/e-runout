@@ -15,8 +15,10 @@ const Measure = () => {
 
   useEffect(() => {
     const selectedIndex = measurements.length - 1
-    setSelected(measurements[selectedIndex] ? measurements[selectedIndex].name : '')
-  }, [ ])
+    if (!selected) {
+      setSelected(measurements[selectedIndex] ? measurements[selectedIndex].id : '')
+    }
+  }, [ selected, measurements ])
 
   return (
     <Row>
@@ -27,7 +29,7 @@ const Measure = () => {
       <Col xs={12} md={12} lg={6}>    
         <h1>Measurements</h1>
         <Chart 
-          measurement={measurements.find(measurement => measurement.name === selected)} 
+          measurement={measurements.find(measurement => measurement.id === selected)} 
         />
         <MeasurementList 
           measurements={measurements} 

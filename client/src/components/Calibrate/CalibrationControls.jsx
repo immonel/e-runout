@@ -14,8 +14,8 @@ const CalibrationControls = ({ selectedCalibration }) => {
   const sampleMode = deviceConfig.sampleMode
   const dispatch = useDispatch()
 
-  const addToCalibration = (calibrationName) =>
-    socket.emit('APPEND_CALIBRATION', calibrationName)
+  const addToCalibration = (calibrationId) =>
+    socket.emit('APPEND_CALIBRATION', calibrationId)
   
   const handleStopMeasurement = () =>
     socket.emit('STOP_MEASUREMENT')

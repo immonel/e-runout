@@ -15,8 +15,10 @@ const Calibrate = () => {
 
   useEffect(() => {
     const selectedIndex = calibrations.length - 1
-    setSelected(calibrations[selectedIndex] ? calibrations[selectedIndex].name : '')
-  }, [ ])
+    if (!selected) {
+      setSelected(calibrations[selectedIndex] ? calibrations[selectedIndex].id : '')
+    }
+  }, [ calibrations, selected ])
 
   return (
     <Row>
@@ -27,7 +29,7 @@ const Calibrate = () => {
       <Col xs={12} md={12} lg={6}>     
         <h1>Calibrations</h1>
         <Chart 
-          measurement={calibrations.find(measurement => measurement.name === selected)} 
+          measurement={calibrations.find(measurement => measurement.id === selected)} 
         />
         <CalibrationList 
           calibrations={calibrations} 
