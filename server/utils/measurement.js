@@ -25,12 +25,12 @@ const createMeasurement = (opts) => {
     datasets: [
       {
         name: config.ttlSensorName,
-        coefficient: config.ttlSensorCoefficient,
+        type: 'ttl',
         data: []
       },
       {
         name: config.eddySensorName,
-        coefficient: config.eddySensorCoefficient,
+        type: 'eddy',
         data: []
       }
     ]
@@ -117,6 +117,8 @@ const startMeasurement = (opts) => {
     const newMeasurement = createMeasurement({
       name: String(Date.now()),
       type: 'measurement',
+      regressionCoefficient: config.regressionCoefficient,
+      scaleFactor: config.scaleFactor,
       ...opts
     })
     measurements.push(newMeasurement)

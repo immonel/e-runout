@@ -2,9 +2,9 @@ let config = {
   cycleCount: 1,
   sampleMode: 'once',
   ttlSensorName: 'Heidenhain MT-25',
-  ttlSensorCoefficient: 0.01,
   eddySensorName: 'Eddy Current Probe',
-  eddySensorCoefficient: 1,
+  regressionCoefficient: 1,
+  scaleFactor: 1,
   serialPath: '/dev/ttyACM0'
 }
 

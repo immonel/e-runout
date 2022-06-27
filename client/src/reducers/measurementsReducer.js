@@ -1,36 +1,31 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const preprocessMeasurement = (measurement) => {
+  const regressionCoefficient = measurement.regressionCoefficient
+  const scaleFactor = measurement.scaleFactor
+  
   /* Transform raw sensor values */
   const processedMeasurement = {
     ...measurement,
     datasets: measurement.datasets.map(dataset => ({
       ...dataset,
-      data: dataset.data.map(dataPoint => dataPoint * dataset.coefficient)
+      data: dataset.data.map(dataPoint => (
+        dataset.type === 'eddy'
+          ? dataPoint * scaleFactor * regressionCoefficient
+          : dataPoint * scaleFactor
+      ))
     }))
   }
+
   /* Add electrical runout */
   processedMeasurement.datasets.push({
     name: 'Electrical runout',
-    coefficient: 1,
-    data: processedMeasurement.datasets[0].data.map((dataPoint, i) => (
-      Math.abs(dataPoint - processedMeasurement.datasets[1].data[i])
-    ))
+    type: 'erunout',
+    data: processedMeasurement.datasets[0].data.map((ttlDataPoint, i) => {
+      const eddyDataPoint = processedMeasurement.datasets[1].data[i]
+      return Math.abs(ttlDataPoint - eddyDataPoint)
+    })
   })
-  return processedMeasurement
-}
-
-const preprocessCalibration = (calibration) => {
-  /* Transform raw sensor values */
-  const processedMeasurement = {
-    ...calibration,
-    datasets: calibration.datasets.map((dataset, i) => ({
-      ...dataset,
-      data: dataset.data.map(dataPoint => 
-        i === 0 ? dataPoint * dataset.coefficient : dataPoint
-      )
-    }))
-  }
   return processedMeasurement
 }
 
@@ -44,7 +39,6 @@ const measurementsSlice = createSlice({
           case 'measurement':
             return preprocessMeasurement(measurement)
           case 'calibration':
-            return preprocessCalibration(measurement)
           default:
             return measurement
         }

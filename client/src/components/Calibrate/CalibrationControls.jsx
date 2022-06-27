@@ -6,8 +6,6 @@ import { setConfig } from '../../reducers/configReducer'
 import { socket } from '../../socket'
 import SettingInput from '../SettingInput'
 
-
-
 const CalibrationControls = ({ selectedCalibration }) => {
   const deviceStatus = useSelector(state => state.status)
   const deviceConfig = useSelector(state => state.config)
@@ -28,36 +26,6 @@ const CalibrationControls = ({ selectedCalibration }) => {
       <Card.Body>
         <Table>
           <tbody>
-            <tr>
-              <td>TTL Sensor resolution (m):</td>
-              <td>
-                <Row>
-                  <Col xs={5}>
-                    <SettingInput
-                      isValid={(input) => !isNaN(input)}
-                      placeholder={deviceConfig.ttlSensorCoefficient}
-                      propertyName='ttlSensorCoefficient'
-                      type='number'
-                    />
-                  </Col>
-                </Row>
-              </td>
-            </tr>
-            <tr>
-              <td>Eddy Sensor Coefficient (m/V):</td>
-              <td>
-                <Row>
-                  <Col xs={5}>
-                    <SettingInput
-                      isValid={(input) => !isNaN(input)}
-                      placeholder={deviceConfig.eddySensorCoefficient}
-                      propertyName='eddySensorCoefficient'
-                      type='number'
-                    />
-                  </Col>
-                </Row>
-              </td>
-            </tr>
             <tr>
               <td>Cycle count:</td>
               <td>

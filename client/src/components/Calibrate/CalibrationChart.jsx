@@ -21,8 +21,12 @@ const CalibrationChart = ({ measurement }) => {
 
   if (measurement) {
     linregr = regression.linear(
-      measurement.datasets[0].data.map((x, i) => [x, measurement.datasets[1].data[i]])
-        .filter(([x, y]) => y < 3500)
+      measurement.datasets[0].data
+        .map((ttlSensorPoint, i) => {
+          const eddySensorPoint = measurement.datasets[1].data[i]
+          return [eddySensorPoint, ttlSensorPoint]
+        })
+        .filter(([eddySensorPoint, ttlSensorPoint]) => eddySensorPoint < 3500)
     )
     linregrPoints = [
       {
@@ -38,7 +42,7 @@ const CalibrationChart = ({ measurement }) => {
 
   const setAsCalibration = () => {
     dispatch(setConfig({
-      eddySensorCoefficient: 1 / linregr.equation[0]
+      regressionCoefficient: linregr.equation[0]
     }))
   }
 
@@ -49,12 +53,12 @@ const CalibrationChart = ({ measurement }) => {
         // labels: Array.from({length: measurement.datasets[0].data.length}, (x, i) => i),
         datasets: [{
           type: 'scatter',
-          label: 'nauraa',
+          label: 'Calibration points',
           data: measurement.datasets[0].data.map((ttlSensorPoint, i) => {
             const eddySensorPoint = measurement.datasets[1].data[i]
             return ({
-              x: ttlSensorPoint,
-              y: eddySensorPoint
+              x: eddySensorPoint,
+              y: ttlSensorPoint
             })
           }),
           backgroundColor: 'rgba(255, 206, 86, 0.7)',
@@ -78,13 +82,13 @@ const CalibrationChart = ({ measurement }) => {
         x: {
           title: {
             display: true,
-            text: 'TTL Sensor reading (m)'
+            text: 'Eddy Current Probe reading'
           }
         },
         y: {
           title: {
             display: true,
-            text: 'Eddy Current Probe Voltage (V)'
+            text: 'TTL Sensor reading'
           }
         }
       }

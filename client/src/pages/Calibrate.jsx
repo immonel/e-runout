@@ -5,6 +5,7 @@ import Chart from '../components/Calibrate/CalibrationChart'
 import DeviceStatus from '../components/DeviceStatus'
 import CalibrationControls from '../components/Calibrate/CalibrationControls'
 import { useSelector } from 'react-redux'
+import CalibrationStatus from '../components/Calibrate/CalibrationStatus'
 import CalibrationList from '../components/Calibrate/CalibrationList'
 import { createSelector } from '@reduxjs/toolkit'
 
@@ -33,6 +34,7 @@ const Calibrate = () => {
     <Row>
       <Col xs={12} md={12} lg={6}>
         <DeviceStatus />
+        <CalibrationStatus />
         <CalibrationControls selectedCalibration={selected} />
       </Col>
       <Col xs={12} md={12} lg={6}>     

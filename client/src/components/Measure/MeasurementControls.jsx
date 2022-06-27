@@ -47,6 +47,21 @@ const MeasurementControls = () => {
               </td>
             </tr>
             <tr>
+              <td>TTL Sensor resolution (μm):</td>
+              <td>
+                <Row>
+                  <Col xs={5}>
+                    <SettingInput
+                      isValid={(input) => !isNaN(input)}
+                      placeholder={deviceConfig.scaleFactor}
+                      propertyName='scaleFactor'
+                      type='number'
+                    />
+                  </Col>
+                </Row>
+              </td>
+            </tr>
+            <tr>
               <td>Cycle count:</td>
               <td>
                 <Row>
