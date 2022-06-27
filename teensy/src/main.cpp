@@ -11,6 +11,7 @@ QuadEncoder heidenHain2(2, 3, 4, 0, 7);
 bool running = false;
 
 void setup() {
+  Serial.setTimeout(50);
   Serial.begin(1);
   Serial.println("Started up Teensy");
   
