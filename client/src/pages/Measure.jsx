@@ -6,12 +6,21 @@ import Chart from '../components/Measure/MeasurementChart'
 import DeviceStatus from '../components/DeviceStatus'
 import MeasurementControls from '../components/Measure/MeasurementControls'
 import { useSelector } from 'react-redux'
+import { createSelector } from '@reduxjs/toolkit'
+
+const selectAllMeasurements = state => state.measurements
+
+const filterMeasurements = measurements => 
+  measurements.filter(measurement => measurement.type === 'measurement')
+
+const selectMeasurements = createSelector(
+  selectAllMeasurements,
+  filterMeasurements
+)
 
 const Measure = () => {
   const [ selected, setSelected ] = useState('')
-  const measurements = useSelector(state => 
-    state.measurements.filter(measurement => measurement.type === 'measurement')
-  )
+  const measurements = useSelector(state => selectMeasurements(state))
 
   useEffect(() => {
     const selectedIndex = measurements.length - 1

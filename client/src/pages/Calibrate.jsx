@@ -6,12 +6,21 @@ import DeviceStatus from '../components/DeviceStatus'
 import CalibrationControls from '../components/Calibrate/CalibrationControls'
 import { useSelector } from 'react-redux'
 import CalibrationList from '../components/Calibrate/CalibrationList'
+import { createSelector } from '@reduxjs/toolkit'
+
+const selectAllMeasurements = state => state.measurements
+
+const filterCalibrations = measurements => 
+  measurements.filter(measurement => measurement.type === 'calibration')
+
+const selectCalibrations = createSelector(
+  selectAllMeasurements,
+  filterCalibrations
+)
 
 const Calibrate = () => {
   const [ selected, setSelected ] = useState('')
-  const calibrations = useSelector(state => 
-    state.measurements.filter(measurement => measurement.type === 'calibration')
-  )
+  const calibrations = useSelector(state => selectCalibrations(state))
 
   useEffect(() => {
     const selectedIndex = calibrations.length - 1
