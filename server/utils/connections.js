@@ -1,20 +1,20 @@
 const config = require('./config').config
 const status = require('./status').status
-const connectionInterval = 5000
-let connectionIntervalID
+const reconnectionInterval = 5000
+let timeoutID
 
 const handlers = (io, serial) => {
 
-  const startReconnectionInterval = () => {
-    console.log(`Attempting to reconnect in ${connectionInterval}ms...`)
-    clearInterval(connectionIntervalID)
-    connectionIntervalID = setInterval(() => {
-      serial.open((error) => {
-        if (error) {
-          console.log(`Error connecting to serial port ${config.serialPath}:`, error)
-        }
-      })
-    }, connectionInterval)
+  const reconnect = () => {
+    clearTimeout(timeoutID)
+    console.log(`Attempting to reconnect to MCU...`)
+    serial.open((error) => {
+      if (error) {
+        console.log(`Error connecting to serial port ${config.serialPath}:`, error)
+        console.log(`Attempting to reconnect in ${reconnectionInterval}ms`)
+        timeoutID = setTimeout(reconnect, reconnectionInterval)
+      }
+    })
   }
 
   const rebootDevice = () => serial.write('REBOOT')
@@ -32,6 +32,11 @@ const handlers = (io, serial) => {
       rebootDevice()
     })
 
+    socket.on('RECONNECT', () => {
+      console.log('Socket IO: Received a request to reconnect to MCU')
+      reconnect()
+    })
+
     socket.on('ZERO', () => {
       console.log('Socket IO: Received a request to zero the encoder')
       zeroEncoder()
@@ -40,7 +45,7 @@ const handlers = (io, serial) => {
 
   serial.on('open', () => {
     status.serialConnectionStatus = 'Connected'
-    clearInterval(connectionIntervalID)
+    clearTimeout(timeoutID)
     console.log('Serial port connection established for teensy')
     io.emit('GET_STATUS', status)
   })
@@ -48,14 +53,14 @@ const handlers = (io, serial) => {
   serial.on('close', () => {
     status.serialConnectionStatus = 'Disconnected'
     console.log('Serial port connection lost for teensy')
-    startReconnectionInterval()
+    reconnect()
     io.emit('GET_STATUS', status)
   })
 
   serial.on('error', error => {
     status.serialConnectionStatus = 'Not connected'
     console.log('Error in serial port connection', error)
-    startReconnectionInterval()
+    reconnect()
     io.emit('GET_STATUS', status)
   })
 }
