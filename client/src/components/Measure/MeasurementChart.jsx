@@ -34,6 +34,12 @@ const MeasurementChart = ({ measurement }) => {
       scales: {
         x: {
           type: 'linear'
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Deviation from average (μm)'
+          }
         }
       },
       elements: {
