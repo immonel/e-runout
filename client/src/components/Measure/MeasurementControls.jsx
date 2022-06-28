@@ -27,6 +27,28 @@ const MeasurementControls = () => {
         <Table>
           <tbody>
             <tr>
+              <td>Measurement name:</td>
+              <td>
+                <SettingInput
+                  isValid={(input) => input.length < 50}
+                  placeholder={deviceConfig.measurementName}
+                  propertyName='measurementName'
+                  optional
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>Component reference:</td>
+              <td>
+                <SettingInput
+                  isValid={(input) => input.length < 50}
+                  placeholder={deviceConfig.componentRef}
+                  propertyName='componentRef'
+                  optional
+                />
+              </td>
+            </tr>
+            <tr>
               <td>TTL sensor name:</td>
               <td>
                 <SettingInput

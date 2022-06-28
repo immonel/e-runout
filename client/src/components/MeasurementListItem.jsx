@@ -49,6 +49,10 @@ const Measurement = ({ measurement }) => {
     <div className="measurement-list-item">
       <Row>
         <span>{measurement.name}</span>
+        {
+          measurement.componentRef &&
+            <span className='text-details'>Reference: {measurement.componentRef}</span>
+        }
         <span className='text-details'>{sampleSize} sample{sampleSize !== 1 && 's'}</span>
         <span className='text-details'>{measurement.created}</span>
       </Row>

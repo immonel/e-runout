@@ -37,11 +37,10 @@ const createMeasurement = (opts) => {
   }
 }
 
-const createNewCalibration = (opts) => {
+const createNewCalibration = () => {
   measurements.push(createMeasurement({
     name: String(Date.now()),
-    type: 'calibration',
-    ...opts
+    type: 'calibration'
   }))
   io.emit('GET_MEASUREMENTS', measurements)
 }
@@ -115,11 +114,13 @@ const startMeasurement = (opts) => {
   if (!status.running) {
     handleStartMeasurement()
     const newMeasurement = createMeasurement({
-      name: String(Date.now()),
+      name: config.measurementName || String(Date.now()),
       type: 'measurement',
       regressionCoefficient: config.regressionCoefficient,
       scaleFactor: config.scaleFactor,
-      ...opts
+      ...(config.componentRef && {
+        componentRef: config.componentRef
+      })
     })
     measurements.push(newMeasurement)
     console.log(`Started a new measurement '${newMeasurement.name}'`)
