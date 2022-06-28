@@ -13,6 +13,8 @@ const handlers = (io, serial) => {
     socket.emit('GET_CONFIG', config)
 
     socket.on('SET_CONFIG', (newConfig) => {
+      /* Remove null values */
+      newConfig = Object.fromEntries(Object.entries(newConfig).filter(([_, v]) => v != null))
       console.log('Setting config: ', newConfig)
       config = newConfig
       io.emit('GET_CONFIG', config)
