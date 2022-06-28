@@ -1,5 +1,5 @@
 import React from 'react'
-import { ButtonGroup, Card, Col, Row, Table, ToggleButton } from 'react-bootstrap'
+import { ButtonGroup, Card, Table, ToggleButton } from 'react-bootstrap'
 import { BsPlayFill, BsStopFill } from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
 import { setConfig } from '../../reducers/configReducer'
@@ -28,17 +28,13 @@ const CalibrationControls = ({ selectedCalibration }) => {
           <tbody>
             <tr>
               <td>Cycle count:</td>
-              <td>
-                <Row>
-                  <Col xs={5}>
-                    <SettingInput
-                      isValid={(input) => Number.isInteger(input) && input > 0}
-                      placeholder={deviceConfig.cycleCount}
-                      propertyName='cycleCount'
-                      type='number'
-                    />
-                  </Col>
-                </Row>
+              <td className='w-50'>
+                <SettingInput
+                  isValid={(input) => Number.isInteger(input) && input > 0}
+                  placeholder={deviceConfig.cycleCount}
+                  propertyName='cycleCount'
+                  type='number'
+                />
               </td>
             </tr>
           </tbody>

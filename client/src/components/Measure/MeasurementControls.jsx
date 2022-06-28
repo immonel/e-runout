@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { ButtonGroup, Card, Col, Row, Table, ToggleButton } from 'react-bootstrap'
+import { ButtonGroup, Card, Table, ToggleButton } from 'react-bootstrap'
 import { BsPlayFill, BsStopFill } from 'react-icons/bs'
 import { useSelector } from 'react-redux'
 import { socket } from '../../socket'
@@ -71,31 +71,23 @@ const MeasurementControls = () => {
             <tr>
               <td>TTL Sensor resolution (μm):</td>
               <td>
-                <Row>
-                  <Col xs={5}>
-                    <SettingInput
-                      isValid={(input) => !isNaN(input)}
-                      placeholder={deviceConfig.scaleFactor}
-                      propertyName='scaleFactor'
-                      type='number'
-                    />
-                  </Col>
-                </Row>
+                <SettingInput
+                  isValid={(input) => !isNaN(input)}
+                  placeholder={deviceConfig.scaleFactor}
+                  propertyName='scaleFactor'
+                  type='number'
+                />
               </td>
             </tr>
             <tr>
               <td>Cycle count:</td>
               <td>
-                <Row>
-                  <Col xs={5}>
-                    <SettingInput
-                      isValid={(input) => Number.isInteger(input) && input > 0}
-                      placeholder={deviceConfig.cycleCount}
-                      propertyName='cycleCount'
-                      type='number'
-                    />
-                  </Col>
-                </Row>
+                <SettingInput
+                  isValid={(input) => Number.isInteger(input) && input > 0}
+                  placeholder={deviceConfig.cycleCount}
+                  propertyName='cycleCount'
+                  type='number'
+                />
               </td>
             </tr>
           </tbody>

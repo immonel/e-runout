@@ -32,7 +32,7 @@ const Calibrate = () => {
 
   return (
     <Row>
-      <Col xs={12} md={12} lg={6}>
+      <Col xs={12} md={12} lg={6} className='mb-4'>
         <DeviceStatus />
         <CalibrationStatus />
         <CalibrationControls selectedCalibration={selected} />

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Col, Row, Table } from 'react-bootstrap'
+import { Card, Table } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import SettingInput from '../SettingInput'
 
@@ -16,17 +16,13 @@ const CalibrationStatus = () => {
           <tbody>
             <tr>
               <td>Regression coefficient:</td>
-              <td>
-                <Row>
-                  <Col xs={5}>
-                    <SettingInput
-                      isValid={(input) => !isNaN(input)}
-                      placeholder={deviceConfig.regressionCoefficient}
-                      propertyName='regressionCoefficient'
-                      type='number'
-                    />
-                  </Col>
-                </Row>
+              <td className='w-50'>
+                <SettingInput
+                  isValid={(input) => !isNaN(input)}
+                  placeholder={deviceConfig.regressionCoefficient}
+                  propertyName='regressionCoefficient'
+                  type='number'
+                />
               </td>
             </tr>
           </tbody>

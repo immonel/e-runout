@@ -8,6 +8,10 @@ const SettingInput = ({ isValid, placeholder, propertyName, disabled, type, opti
   const [ isInvalid, setIsInvalid ] = useState(false)
   const dispatch = useDispatch()
 
+  const widthStyle = type === 'number' ? {
+    maxWidth: '150px'
+  } : {}
+
   const handleSubmit = (event) => {
     event.preventDefault()
     let newValue = value
@@ -33,7 +37,7 @@ const SettingInput = ({ isValid, placeholder, propertyName, disabled, type, opti
   }
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} style={widthStyle}>
       <InputGroup hasValidation className='input-group'>
         <Form.Control 
           className='input-field'
