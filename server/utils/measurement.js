@@ -151,6 +151,11 @@ const handlers = (_io, _serial, _parser) => {
   io.on('connection', (socket) => {
     socket.emit('GET_MEASUREMENTS', measurements)
 
+    socket.on('GET_MEASUREMENT_BY_ID', (id, callback) => {
+      const measurement = measurements.find(measurement => measurement.id === id)
+      callback(measurement)
+    })
+
     socket.on('START_MEASUREMENT', (opts) => {
       console.log('Socket IO: Received request to start measuring')
       startMeasurement(opts)

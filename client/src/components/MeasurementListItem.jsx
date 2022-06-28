@@ -9,6 +9,14 @@ const createBlobUrl = (data) => {
   }))
 }
 
+const handleGetMeasurement = (event, measurementId) => {
+  event.stopPropagation()
+  socket.emit('GET_MEASUREMENT_BY_ID', measurementId, (response) => {
+    const blobURL = createBlobUrl(response)
+    window.location.href = blobURL
+  })
+}
+
 const handleDeleteMeasurement = (event, id) => {
   event.stopPropagation()
   socket.emit('DELETE_MEASUREMENT', id)
@@ -22,15 +30,13 @@ const ActionButtons = ({ measurement }) => (
       <BsTrash />
     </Button>
     <Button variant='outline-secondary'
-      href={createBlobUrl(measurement)}
-      onClick={(event) => event.stopPropagation()}
+      onClick={(event) => handleGetMeasurement(event, measurement.id)}
     >
       <BsFileEarmarkText />
     </Button>
     <Button variant='outline-secondary'
       download={`${measurement.name}.json`}
-      href={createBlobUrl(measurement)}
-      onClick={(event) => event.stopPropagation()}
+      onClick={(event) => handleGetMeasurement(event, measurement.id)}
     >
       <BsDownload />
     </Button>
