@@ -61,14 +61,14 @@ const CalibrationChart = ({ measurement }) => {
               y: ttlSensorPoint
             })
           }),
-          backgroundColor: 'rgba(255, 206, 86, 0.7)',
+          backgroundColor: 'rgb(75, 192, 192)',
           order: 1
         },
         {
           type: 'line',
           label: 'Linear regression',
           data: linregrPoints,
-          borderColor: 'rgb(0, 0, 0)',
+          borderColor: 'rgba(0, 0, 0, 0.7)',
           radius: 0,
           order: 0
         }
