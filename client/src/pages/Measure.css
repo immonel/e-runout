@@ -34,3 +34,8 @@
 .chart {
   min-height: 300px;
 }
+
+.modal-button {
+  float: right;
+  transform: translateY(10px)
+}
