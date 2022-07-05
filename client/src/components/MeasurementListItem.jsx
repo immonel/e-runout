@@ -1,6 +1,10 @@
 import React from 'react'
 import { Button, ButtonGroup, Row } from 'react-bootstrap'
-import { BsDownload, BsTrash, BsFileEarmarkText } from 'react-icons/bs'
+import {
+  // BsDownload,
+  BsTrash,
+  BsFileEarmarkText
+} from 'react-icons/bs'
 import { socket } from '../socket'
 
 const createBlobUrl = (data) => {
@@ -34,12 +38,12 @@ const ActionButtons = ({ measurement }) => (
     >
       <BsFileEarmarkText />
     </Button>
-    <Button variant='outline-secondary'
+    {/* <Button variant='outline-secondary'
       download={`${measurement.name}.json`}
       onClick={(event) => handleGetMeasurement(event, measurement.id)}
     >
       <BsDownload />
-    </Button>
+    </Button> */}
   </ButtonGroup>
 )
 
