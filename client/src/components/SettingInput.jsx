@@ -18,7 +18,7 @@ const SettingInput = ({ isValid, placeholder, propertyName, disabled, type, opti
     if (type === 'number') {
       newValue = Number(value)
     }
-    if (isValid(newValue)) {
+    if (isValid(newValue) && value.trim().length > 0) {
       setValue('')
       setIsInvalid(false)
       dispatch(setConfig({
@@ -47,7 +47,7 @@ const SettingInput = ({ isValid, placeholder, propertyName, disabled, type, opti
           value={value}
           disabled={disabled}
           onChange={(event) => {
-            setValue(event.target.value.trim())
+            setValue(event.target.value)
           }} 
         />
         {
