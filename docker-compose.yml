@@ -8,3 +8,16 @@ services:
     privileged: true
     ports:
       - 80:3000
+      
+  wifi-ap:
+    image: sdelrio/rpi-hostap:latest
+    privileged: true
+    environment:
+      SSID: ${SSID}
+      WPA_PASSPHRASE: ${WPA_PASSPHRASE}
+      INTERFACE: wlan0
+      CHANNEL: 6
+      APADDR: 192.168.254.1
+      SUBNET: 192.168.254.0
+      OUTGOINGS: eth0
+    network_mode: host
