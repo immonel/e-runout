@@ -12,12 +12,13 @@ services:
   wifi-ap:
     image: sdelrio/rpi-hostap:latest
     privileged: true
+    restart: unless-stopped
     environment:
       SSID: ${SSID}
       WPA_PASSPHRASE: ${WPA_PASSPHRASE}
       INTERFACE: wlan0
       CHANNEL: 6
-      APADDR: 192.168.254.1
-      SUBNET: 192.168.254.0
+      AP_ADDR: 10.0.10.1
+      SUBNET: 10.0.10.0
       OUTGOINGS: eth0
     network_mode: host
