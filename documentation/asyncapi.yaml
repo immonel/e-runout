@@ -1,0 +1,227 @@
+asyncapi: '2.4.0'
+info:
+  title: E-runout WebSocket API
+  version: '1.0.0'
+  description: |
+    The Smartylighting Streetlights API allows you to remotely manage the city lights.
+
+servers:
+  server:
+    url: 10.0.10.1
+    protocol: ws
+    description: E-runout server
+
+defaultContentType: application/json
+
+channels:
+  /:
+    publish:
+      description: Send messages to the API
+      operationId: sendMessage
+      message:
+        oneOf:
+          - $ref: '#/components/messages/GET_STATUS'
+          - $ref: "#/components/messages/GET_CONFIG"
+          - $ref: "#/components/messages/SET_CONFIG"
+          - $ref: "#/components/messages/GET_MEASUREMENTS"
+          - $ref: "#/components/messages/GET_MEASUREMENT_BY_ID"
+          - $ref: "#/components/messages/START_MEASUREMENT"
+          - $ref: "#/components/messages/STOP_MEASUREMENT"
+          - $ref: "#/components/messages/CREATE_CALIBRATION"
+          - $ref: "#/components/messages/APPEND_CALIBRATION"
+          - $ref: "#/components/messages/DELETE_CALIBRATIONS"
+          - $ref: "#/components/messages/DELETE_MEASUREMENTS"
+          - $ref: "#/components/messages/DELETE_MEASUREMENT"
+          - $ref: "#/components/messages/RESTART_DEVICE"
+          - $ref: "#/components/messages/RECONNECT"
+          - $ref: "#/components/messages/ZERO"
+    subscribe:
+      description: Messages that you receive from the API
+      operationId: processMessage
+      message:
+        oneOf:
+          - $ref: '#/components/messages/GET_STATUS'
+          - $ref: '#/components/messages/GET_CONFIG'
+          - $ref: '#/components/messages/GET_MEASUREMENTS'
+
+
+components:
+  messages:
+    GET_STATUS:
+      title: GET_STATUS
+      summary: Broadcast system status to clients
+      payload:
+        $ref: "#/components/schemas/status"
+
+    GET_CONFIG:
+      title: GET_CONFIG
+      summary: Broadcast system config to clients
+      payload:
+        $ref: "#/components/schemas/config"
+
+    SET_CONFIG:
+      title: SET_CONFIG
+      summary: Set system config with new parameters
+      payload:
+        $ref: "#/components/schemas/config"
+
+    GET_MEASUREMENTS:
+      title: GET_MEASUREMENTS
+      summary: Sends the saved measurements to the client
+      payload:
+        type: array
+        items:
+          $ref: "#/components/schemas/measurement"
+          
+    GET_MEASUREMENT_BY_ID:
+      title: GET_MEASUREMENT_BY_ID
+      summary: Request a measurement by its ID
+      payload:
+        $ref: "#/components/schemas/measurementId"
+      x-response:
+        $ref: "#/components/schemas/measurement"
+
+    START_MEASUREMENT:
+      title: START_MEASUREMENT
+      summary: Request to start a new measurement with current config
+
+    STOP_MEASUREMENT:
+      title: STOP_MEASUREMENT
+      summary: Request to stop the current measurement. Does nothing if no measurement is in progress
+
+    CREATE_CALIBRATION:
+      title: CREATE_CALIBRATION
+      summary: Request to create a new empty calibration
+
+    APPEND_CALIBRATION:
+      title: APPEND_CALIBRATION
+      summary: Request to start adding data points into an existing calibration by its ID
+      payload:
+        $ref: "#/components/schemas/measurementId"
+
+    DELETE_CALIBRATIONS:
+      title: DELETE_CALIBRATIONS
+      summary: Delete all saved 'calibration' type measurements
+
+    DELETE_MEASUREMENTS:
+      title: DELETE_MEASUREMENTS
+      summary: Delete all saved 'measurement' type measurements
+
+    DELETE_MEASUREMENT:
+      title: DELETE_MEASUREMENT
+      summary: Delete a 'calibration' or 'measurement' type measurement by ID
+      payload:
+        $ref: "#/components/schemas/measurementId"
+
+    RESTART_DEVICE:
+      title: RESTART_DEVICE
+      summary: Restart the Teensy microcontroller
+
+    RECONNECT:
+      title: RECONNECT
+      summary: Attempt to reconnect to the Teensy using 'serialPath' from config
+
+    ZERO:
+      title: ZERO
+      summary: Reset the Teensy microcontroller's TTL sensor values to zero
+
+  schemas:
+    measurementId:
+      type: string
+      description: ID of the measurement
+
+    status:
+      type: object
+      properties:
+        serialConnectionStatus:
+          type: string
+        serialPath:
+          type: string
+        running:
+          type: boolean
+          description: Is a measurement running?
+        dataPoints:
+          type: number
+          description: Number of data points sampled during the current measurement
+        startTime:
+          type: number
+          description: Start time of the current measurement in Unix millis
+      
+    config:
+      type: object
+      properties:
+        serialPath:
+          type: string
+        cycleCount:
+          type: number
+        sampleMode:
+          type: string
+          enum:
+            - once
+            - continuous
+            - cycles
+        ttlSensorName:
+          type: string
+        eddySensorName:
+          type: string
+        regressionCoefficient:
+          type: number
+        scaleFactor:
+          type: number
+        measurementName:
+          type: string
+        componentRef:
+          type: string
+
+    measurement:
+      type: object
+      description: Data type of the measurements created with e-runout analyzer. Can be a measurement or a calibration
+      properties:
+        name:
+          type: string
+          description: Name of the measurement
+        type:
+          type: string
+          enum:
+            - measurement
+            - calibration
+          description: Type of the measurement
+        created:
+          type: string
+          description: Time and date of creation
+        id:
+          $ref: "#/components/schemas/measurementId"
+        componentRef:
+          type: string
+          description: Identification of the component being measured
+        regressionCoefficient:
+          type: number
+          description: Calibration coefficient used to match Eddy probe values to TTL probe values
+        scaleFactor:
+          type: number
+          description: Coefficient used to scale the sensor values from raw values to micrometres. Applies to both TTL sensor values and calibrated Eddy sensor values.
+        datasets:
+          type: array
+          items:
+            $ref: "#/components/schemas/dataset"
+
+    dataset:
+      type: object
+      description: Measurement values of a single sensor
+      properties:
+        name:
+          type: string
+          description: Name of the sensor
+        type:
+          type: string
+          enum:
+            - ttl
+            - eddy
+            - erunout
+          description: Sensor type
+        data:
+          type: array
+          items:
+            type: number
+          description: Array of sensor values
+
