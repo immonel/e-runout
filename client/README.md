@@ -1,70 +1,37 @@
-# Getting Started with Create React App
+# Electrical runout analyzer -- frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Frontend of the `e-runout` project is a SPA (single page application) built with React and Bootstrap. 
 
-## Available Scripts
+The frontend uses WebSockets to communicate with the backend. ASyncAPI documentation about the WebSocket API can be found in [documentation/asyncapi.yaml](../documentation/asyncapi.yaml). It is recommended to use e.g. [AsyncAPI Studio](https://studio.asyncapi.com/) to view the API documentation.
 
-In the project directory, you can run:
 
-### `npm start`
+## The webapp
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The webapp contains two pages: `Measure` and `Calibrate`.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Measure
 
-### `npm test`
+The `Measure` page is used to create and view measurements. When you press the `Start` button, a new measurement is created with the parameters given in the webapp. Data points are not recorded until the rotary encoder hits the trigger point. After the trigger point, data points are sampled and saved to the new measurement. If either the configured cycle count is reached or the measurement is stopped, the newly created measurement will be added to the measurement list.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**NOTE: Remember to calibrate the Eddy current sensor on the `Calibrate` tab before measuring for the first time!**
 
-### `npm run build`
+### Calibrate
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The `Calibrate` page is used to create and view calibrations. **Calibrations use the same data structure internally as regular measurements.** As opposed to the `Measure` page, data points are added to existing calibrations. Thus, you will need to first create an empty calibration and select it to add data points. To set the calibration cofficient, press the `Use calibration` button.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Getting started
+### Development
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To start the frontend development server, run the following commands in the `client` folder.
 
-### `npm run eject`
+1. `npm install`
+2. `npm start`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The development server can be accessed from `localhost:3001` by default.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Production build
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+To build a production webapp, run `npm run build` and it will be built into `build` folder. The backend serves contents from this folder in development environment. 
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+It is recommended, however, to use the production environment using `docker-compose` as described in the project root [README.md](../README.md) file.
