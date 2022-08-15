@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux'
 import { setConfig } from '../../reducers/configReducer'
 import regression from 'regression'
 
+const eddyCutoffThreshold = 3500
+
 const emptyData = () => ({
   datasets: [{
     label: 'no data',
@@ -26,7 +28,7 @@ const CalibrationChart = ({ measurement }) => {
           const eddySensorPoint = measurement.datasets[1].data[i]
           return [eddySensorPoint, ttlSensorPoint]
         })
-        .filter(([eddySensorPoint, ttlSensorPoint]) => eddySensorPoint < 3500)
+        .filter(([eddySensorPoint, ttlSensorPoint]) => eddySensorPoint < eddyCutoffThreshold)
     )
     linregrPoints = [
       {

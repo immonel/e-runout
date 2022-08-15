@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { ButtonGroup, Card, Table, ToggleButton } from 'react-bootstrap'
 import { BsPlayFill, BsStopFill } from 'react-icons/bs'
 import { useSelector } from 'react-redux'
@@ -11,12 +11,11 @@ const MeasurementControls = () => {
   const deviceStatus = useSelector(state => state.status)
   const deviceConfig = useSelector(state => state.config)
 
-  const handleStartMeasurement = useCallback(() => {
+  const handleStartMeasurement = () => 
     socket.emit('START_MEASUREMENT')
-    // setStartTime(Date.now())
-  }, [])
   
-  const handleStopMeasurement = useCallback(() => socket.emit('STOP_MEASUREMENT'), [])
+  const handleStopMeasurement = () => 
+    socket.emit('STOP_MEASUREMENT')
 
   return (
     <Card>

@@ -6,6 +6,12 @@ import { setConfig } from '../../reducers/configReducer'
 import { socket } from '../../socket'
 import SettingInput from '../SettingInput'
 
+const sampleModes = {
+  'once': 'Sample once',
+  'continuous': 'Until stop',
+  'cycles': 'Cycles'
+}
+
 const CalibrationControls = ({ selectedCalibration }) => {
   const deviceStatus = useSelector(state => state.status)
   const deviceConfig = useSelector(state => state.config)
@@ -40,27 +46,17 @@ const CalibrationControls = ({ selectedCalibration }) => {
           </tbody>
         </Table>
         <ButtonGroup>
-          <ToggleButton 
-            checked={sampleMode === 'once'}
-            variant={sampleMode === 'once' ? 'primary' : 'outline-primary'}
-            onClick={() => dispatch(setConfig({sampleMode: 'once'}))}
-          >
-            Sample once
-          </ToggleButton>
-          <ToggleButton 
-            checked={sampleMode === 'continuous'}
-            variant={sampleMode === 'continuous' ? 'primary' : 'outline-primary'}
-            onClick={() => dispatch(setConfig({sampleMode: 'continuous'}))}
-          >
-            Until stop
-          </ToggleButton>
-          <ToggleButton 
-            checked={sampleMode === 'cycles'}
-            variant={sampleMode === 'cycles' ? 'primary' : 'outline-primary'}
-            onClick={() => dispatch(setConfig({sampleMode: 'cycles'}))}
-          >
-            Cycles
-          </ToggleButton>
+          {
+            Object.keys(sampleModes).map(mode => (
+              <ToggleButton 
+                checked={sampleMode === mode}
+                variant={sampleMode === mode ? 'primary' : 'outline-primary'}
+                onClick={() => dispatch(setConfig({sampleMode: mode}))}
+              >
+                {sampleModes[mode]}
+            </ToggleButton>
+            ))
+          }
         </ButtonGroup>
         <ButtonGroup className='status-buttons'>
             <ToggleButton

@@ -25,6 +25,7 @@ const CalibrationList = ({ calibrations, selected, setSelected }) => (
       { 
         calibrations.length 
         ?
+          // Sort the calibrations chronologically
           [...calibrations].sort((x, y) => new Date(y.created) - new Date(x.created)).map((x, i) =>
             <ListGroup.Item
               action 

@@ -34,15 +34,15 @@ int16_t readSPI() {
   digitalWrite(SS_PIN, LOW);
   int16_t result = 0;
   byte data = SPI.transfer(0);
-  // Extract sign bit
-  // result = data & 0b00010000;
-  // result <<= 3;
+
   // Extract high byte
   result += data & 0b00001111;
   result <<= 8;
+
   // Extract lower byte
   data = SPI.transfer(0);
   result += data;
+
   digitalWrite(SS_PIN, HIGH);
   return result;
 }
@@ -91,6 +91,7 @@ void takeDataPoint() {
     ((uint64_t) eddyValue        << 16) |
     (uint64_t)  heidenHain2.indexCounter;
 
+  /* Debug print */
   // Serial.printf("HH1: %d\tHH2: %d\tEddy: %d\tCycle: %d\n", 
   //   heidenHain1Value, 
   //   heidenHain2Value, 
@@ -200,8 +201,6 @@ void loop() {
     else 
     {
       Serial.println("Invalid command.");
-      // Serial.println("Available commands:");
-      // Serial.println("START <cycle count>\tSTOP\tRESTART");
     }
   }
 }
