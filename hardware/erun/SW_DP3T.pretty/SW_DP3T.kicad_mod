@@ -1,0 +1,44 @@
+(footprint "SW_DP3T" (version 20211014) (generator pcbnew)
+  (layer "F.Cu")
+  (tedit 0)
+  (attr through_hole)
+  (fp_text reference "REF**" (at 0 -4.3 unlocked) (layer "F.SilkS")
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp 8c22707e-1141-48ca-b7f7-1cdec405dc74)
+  )
+  (fp_text value "SW_DP3T" (at -3.9 -2.7 unlocked) (layer "F.Fab")
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp 59d6d04f-3373-44ff-9544-210990288cea)
+  )
+  (fp_text user "${REFERENCE}" (at 0 4.4 unlocked) (layer "F.Fab")
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp 590f9d3f-54e3-42c8-b115-446144e2173f)
+  )
+  (fp_rect (start -7.65 -0.8) (end -6.15 0.8) (layer "Edge.Cuts") (width 0.12) (fill none) (tstamp 08c5e9bc-353b-415b-b4b3-8c942cd3726e))
+  (fp_rect (start 6.15 -0.8) (end 7.65 0.8) (layer "Edge.Cuts") (width 0.12) (fill none) (tstamp 56a4d2e0-142f-4ef3-8946-8f546faea669))
+  (fp_rect (start -7.25 -3.5) (end 7.25 3.5) (layer "F.CrtYd") (width 0.12) (fill none) (tstamp a5332cdb-d5d0-4720-8d96-86392ddea70a))
+  (pad "1" thru_hole circle (at -2 1) (size 1.524 1.524) (drill 0.7) (layers *.Cu *.Mask) (tstamp 57ae5647-0796-4ac6-bcfb-5c6815dbd65b))
+  (pad "2" thru_hole circle (at 0 1) (size 1.524 1.524) (drill 0.7) (layers *.Cu *.Mask) (tstamp deeba859-c930-4a16-bb4d-94b435567fd8))
+  (pad "3" thru_hole circle (at 4 1) (size 1.524 1.524) (drill 0.7) (layers *.Cu *.Mask) (tstamp 38d19dd5-d42b-4ad2-8dfd-4f802241141e))
+  (pad "3" thru_hole circle (at -4 1) (size 1.524 1.524) (drill 0.7) (layers *.Cu *.Mask) (tstamp 7ddeb906-24ff-4fa6-bc7a-ed8f7d9db43b))
+  (pad "4" thru_hole circle (at 2 1) (size 1.524 1.524) (drill 0.7) (layers *.Cu *.Mask) (tstamp 73bc975f-09c3-4dda-bb02-860b8380d6ae))
+  (pad "5" thru_hole circle (at 2 -1) (size 1.524 1.524) (drill 0.7) (layers *.Cu *.Mask) (tstamp 945e01cc-26e6-4e25-8927-d1691b3e5aa8))
+  (pad "6" thru_hole circle (at 0 -1) (size 1.524 1.524) (drill 0.7) (layers *.Cu *.Mask) (tstamp e85c4307-62de-4f54-b17c-63a309b8e5f6))
+  (pad "7" thru_hole circle (at 4 -1) (size 1.524 1.524) (drill 0.7) (layers *.Cu *.Mask) (tstamp 11e176fb-bc04-4140-8925-a3615d5cfe8b))
+  (pad "7" thru_hole circle (at -4 -1) (size 1.524 1.524) (drill 0.7) (layers *.Cu *.Mask) (tstamp f4637c51-6268-4f94-945f-5479a98221cd))
+  (pad "8" thru_hole circle (at -2 -1) (size 1.524 1.524) (drill 0.7) (layers *.Cu *.Mask) (tstamp b57d2ad2-879c-4417-bb2d-e54271dcd2a1))
+  (group "" (id 20056665-02e0-4b1e-8308-dcd47723cd85)
+    (members
+      11e176fb-bc04-4140-8925-a3615d5cfe8b
+      38d19dd5-d42b-4ad2-8dfd-4f802241141e
+      57ae5647-0796-4ac6-bcfb-5c6815dbd65b
+      73bc975f-09c3-4dda-bb02-860b8380d6ae
+      7ddeb906-24ff-4fa6-bc7a-ed8f7d9db43b
+      945e01cc-26e6-4e25-8927-d1691b3e5aa8
+      b57d2ad2-879c-4417-bb2d-e54271dcd2a1
+      deeba859-c930-4a16-bb4d-94b435567fd8
+      e85c4307-62de-4f54-b17c-63a309b8e5f6
+      f4637c51-6268-4f94-945f-5479a98221cd
+    )
+  )
+)
