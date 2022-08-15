@@ -1,0 +1,21 @@
+.list-group {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.erase-button {
+  width: 100%;
+  margin-bottom: 6em;
+}
+
+#create-calibration-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #222222;
+  height: 60px;
+}
+
+.chart {
+  min-height: 300px;
+}
