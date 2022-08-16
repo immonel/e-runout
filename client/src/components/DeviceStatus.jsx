@@ -54,7 +54,11 @@ const DeviceStatus = () => {
             </tr>
             <tr>
               <td>Samples taken:</td>
-              <td>{status.dataPoints} sample{status.dataPoints !== 1 && 's'}</td>
+              {
+                status.dataPoints === 0 && status.running ?
+                  <td>Waiting for trigger...</td> :
+                  <td>{status.dataPoints} sample{status.dataPoints !== 1 && 's'}</td>
+              }
             </tr>
           </tbody>
         </Table>
