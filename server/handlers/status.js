@@ -1,5 +1,6 @@
 let status = {
   serialConnectionStatus: 'Connecting...',
+  dbConnectionStatus: 'Connecting...',
   serialPath: '/dev/ttyACM0',
   running: false,
   dataPoints: 0,

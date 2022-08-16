@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const status = require('./status').status
 const Measurement = require('../models/measurement')
 const DEV_MONGODB_URI =
   `mongodb://${process.env.DEV_MONGODB_USERNAME}:${process.env.DEV_MONGODB_PASSWORD}@localhost:27017/erunout`
@@ -10,9 +11,11 @@ console.log('Connecting to database ', MONGODB_URI)
 mongoose.connect(MONGODB_URI)
   .then(result => {
     console.log('Connected to MongoDB')
+    status.dbConnectionStatus = 'Connected'
   })
   .catch((error) => {
     console.log('error connecting to MongoDB:', error.message)
+    status.dbConnectionStatus = 'Error connecting'
   })
 
 const getAllMeasurements = async () => {

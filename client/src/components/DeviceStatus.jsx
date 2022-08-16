@@ -33,6 +33,9 @@ const DeviceStatus = () => {
                   WebSocket: {status.socketConnectionStatus}
                 </Row>
                 <Row>
+                  Database: {status.dbConnectionStatus}
+                </Row>
+                <Row>
                   Serial: {status.serialConnectionStatus}
                   {' '}
                   {status.serialPath && `(${status.serialPath})`}
