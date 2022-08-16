@@ -1,5 +1,4 @@
 const { getConfig } = require('./config')
-const { v4: uuidv4 } = require('uuid');
 const status = require('./status').status
 const db = require('./database')
 const statusInterval = 50
@@ -28,7 +27,6 @@ const createMeasurement = (opts) => {
   return {
     ...opts,
     created: new Date(Date.now()),
-    id: uuidv4(),
     datasets: [
       {
         name: config.ttlSensorName,

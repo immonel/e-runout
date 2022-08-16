@@ -40,7 +40,7 @@ const saveMeasurement = async (measurement) => {
 }
 
 const updateMeasurement = async (measurement) => {
-  await Measurement.findOneAndUpdate({ id: measurement.id }, measurement, { new: true }).exec()
+  await Measurement.findByIdAndUpdate(measurement._id, measurement, { new: true }).exec()
     .catch(error => console.log(error))
 }
 

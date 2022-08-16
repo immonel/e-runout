@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const measurementSchema = mongoose.Schema({
-  id: { type: String, required: true },
+  id: { type: String },
   name: { type: String, required: true },
   type: {
     type: String,
