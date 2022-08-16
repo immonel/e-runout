@@ -1,14 +1,21 @@
 const { getConfig } = require('./config')
 const { v4: uuidv4 } = require('uuid');
 const status = require('./status').status
+const db = require('./database')
 const statusInterval = 50
 
 let statusIntervalID
 
-let measurements = []
 let io
 let serial
 let parser
+
+let currentMeasurement
+
+const broadcastMeasurements = async () => {
+  const measurements = await db.getAllMeasurements()
+  io.emit('GET_MEASUREMENTS', measurements)
+}
 
 const addNewDataPoint = (measurement, x, y) => {
   measurement.datasets[0].data.push(x)
@@ -37,12 +44,13 @@ const createMeasurement = (opts) => {
   }
 }
 
-const createNewCalibration = () => {
-  measurements.push(createMeasurement({
+const createNewCalibration = async () => {
+  const emptyCalibration = createMeasurement({
     name: String(Date.now()),
     type: 'calibration'
-  }))
-  io.emit('GET_MEASUREMENTS', measurements)
+  })
+  await db.saveMeasurement(emptyCalibration)
+  broadcastMeasurements()
 }
 
 const readValue = (data, measurement) => {
@@ -67,15 +75,21 @@ const handleStartMeasurement = () => {
   }, statusInterval)
 }
 
-const handleFinishMeasurement = () => {
+const handleFinishMeasurement = async () => {
   parser.removeAllListeners('data')
   status.running = false
   status.dataPoints = 0
   status.startTime = 0
 
+  if (currentMeasurement.type === 'measurement') {
+    await db.saveMeasurement(currentMeasurement)
+  }
+  if (currentMeasurement.type === 'calibration') {
+    await db.updateMeasurement(currentMeasurement)
+  }
   clearInterval(statusIntervalID)
   io.emit('GET_STATUS', status)
-  io.emit('GET_MEASUREMENTS', measurements)
+  broadcastMeasurements()
 }
 
 const stopMeasurement = () => {
@@ -86,12 +100,12 @@ const stopMeasurement = () => {
 }
 const log = (data) => console.log('[teensy]', data)
 
-const addToCalibration = (id) => {
+const addToCalibration = async (id) => {
   const config = getConfig()
-  const calibration = measurements.find(calibration => calibration.id === id)
-  if (calibration && !status.running) {
+  currentMeasurement = await db.getMeasurementById(id)
+  if (currentMeasurement && !status.running) {
     handleStartMeasurement()
-    const parserCallback = (data) => readValue(data, calibration)
+    const parserCallback = (data) => readValue(data, currentMeasurement)
     parser.on('data', parserCallback)
 
     switch (config.sampleMode) {
@@ -113,7 +127,7 @@ const startMeasurement = (opts) => {
   const config = getConfig()
   if (!status.running) {
     handleStartMeasurement()
-    const newMeasurement = createMeasurement({
+    currentMeasurement = createMeasurement({
       name: config.measurementName || String(Date.now()),
       type: 'measurement',
       regressionCoefficient: config.regressionCoefficient,
@@ -122,28 +136,11 @@ const startMeasurement = (opts) => {
         componentRef: config.componentRef
       })
     })
-    measurements.push(newMeasurement)
-    console.log(`Started a new measurement '${newMeasurement.name}'`)
-    const parserCallback = (data) => readValue(data, newMeasurement)
+    console.log(`Started a new measurement '${currentMeasurement.name}'`)
+    const parserCallback = (data) => readValue(data, currentMeasurement)
     parser.on('data', parserCallback)
     serial.write(`SAMPLE_CYCLES ${config.cycleCount}`)
   }
-}
-
-const getMeasurements = () => measurements
-
-const deleteMeasurementsOfType = (type) => {
-  measurements = measurements.filter(measurement => (
-    measurement.type !== type
-  ))
-  console.log(`Deleted all measurements of type ${type}`)
-  io.emit('GET_MEASUREMENTS', measurements)
-}
-
-const deleteMeasurement = (id) => {
-  measurements = measurements.filter(measurement => measurement.id !== id)
-  console.log(`Deleted measurement '${id}'`)
-  io.emit('GET_MEASUREMENTS', measurements)
 }
 
 const handlers = (_io, _serial, _parser) => {
@@ -151,11 +148,12 @@ const handlers = (_io, _serial, _parser) => {
   serial = _serial
   parser = _parser
 
-  io.on('connection', (socket) => {
+  io.on('connection', async (socket) => {
+    const measurements = await db.getAllMeasurements()
     socket.emit('GET_MEASUREMENTS', measurements)
 
-    socket.on('GET_MEASUREMENT_BY_ID', (id, callback) => {
-      const measurement = measurements.find(measurement => measurement.id === id)
+    socket.on('GET_MEASUREMENT_BY_ID', async (id, callback) => {
+      const measurement = await db.getMeasurementById(id)
       callback(measurement)
     })
 
@@ -179,24 +177,29 @@ const handlers = (_io, _serial, _parser) => {
       stopMeasurement()
     })
 
-    socket.on('DELETE_MEASUREMENT', (id) => {
+    socket.on('DELETE_MEASUREMENT', async (id) => {
       console.log('Socket IO: Received request to delete measurement ', id)
-      deleteMeasurement(id)
+      await db.deleteMeasurementById(id)
+      console.log(`Deleted measurement '${id}'`)
+      broadcastMeasurements()
     })
 
-    socket.on('DELETE_MEASUREMENTS', () => {
+    socket.on('DELETE_MEASUREMENTS', async () => {
       console.log('Socket IO: Received request to delete measurements!')
-      deleteMeasurementsOfType('measurement')
+      await db.deleteMeasurementsByType('measurement')
+      console.log(`Deleted all measurements of type 'measurement'`)
+      broadcastMeasurements()
     })
 
-    socket.on('DELETE_CALIBRATIONS', () => {
+    socket.on('DELETE_CALIBRATIONS', async () => {
       console.log('Socket IO: Received request to delete calibrations!')
-      deleteMeasurementsOfType('calibration')
+      await db.deleteMeasurementsByType('calibration')
+      console.log(`Deleted all measurements of type 'calibration'`)
+      broadcastMeasurements()
     })
   })
 }
 
 module.exports = {
-  handlers,
-  getMeasurements
+  handlers
 }
