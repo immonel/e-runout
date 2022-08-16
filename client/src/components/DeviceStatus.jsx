@@ -3,10 +3,9 @@ import { Badge, Button, Card, Col, Container, OverlayTrigger, Row, Table, Toolti
 import { useDispatch, useSelector } from 'react-redux'
 import { socket } from '../socket'
 import { updateStatus } from '../reducers/statusReducer'
-import { BsArrowCounterclockwise, BsArrowRepeat, BsCpuFill, BsDiagram2Fill, BsServer } from 'react-icons/bs'
+import { BsArrowCounterclockwise, BsCpuFill, BsDiagram2Fill, BsServer } from 'react-icons/bs'
 
 const handleReboot = () => socket.emit('RESTART_DEVICE')
-const handleReconnect = () => socket.emit('RECONNECT')
 
 const deviceStatusBadgeColors = {
   'Connecting...': 'warning',
@@ -105,13 +104,6 @@ const DeviceStatus = () => {
           disabled={!serialDeviceConnected}
         >
           <BsArrowCounterclockwise /> Restart MCU
-        </Button>
-        <Button
-          className='status-buttons mx-2'
-          onClick={handleReconnect}
-          disabled={serialDeviceConnected}
-        >
-          <BsArrowRepeat /> Reconnect MCU
         </Button>
       </Card.Body>
     </Card>
