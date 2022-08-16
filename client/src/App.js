@@ -19,7 +19,7 @@ const App = () => {
     socket.emit("connection")
     socket.on("connect", () => {
       dispatch(updateStatus({
-        socketConnectionStatus: 'OK'
+        socketConnectionStatus: 'Connected'
       }))
     })
 

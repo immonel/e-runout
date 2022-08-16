@@ -94,7 +94,7 @@ const MeasurementControls = () => {
         <ButtonGroup className='status-buttons'>
             <ToggleButton
               className='status-button'
-              disabled={deviceStatus.socketConnectionStatus !== "OK"}
+              disabled={deviceStatus.socketConnectionStatus !== "Connected"}
               type='radio'
               checked={deviceStatus.running}
               variant="outline-success"
@@ -104,7 +104,7 @@ const MeasurementControls = () => {
             </ToggleButton>
             <ToggleButton
               className='status-button'
-              disabled={deviceStatus.socketConnectionStatus !== "OK"}
+              disabled={deviceStatus.socketConnectionStatus !== "Connected"}
               type='radio'
               checked={!deviceStatus.running}
               variant="outline-danger"

@@ -1,12 +1,38 @@
 import React, { useEffect } from 'react'
-import { Button, Card, Row, Table } from 'react-bootstrap'
+import { Badge, Button, Card, Col, Container, OverlayTrigger, Row, Table, Tooltip } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { socket } from '../socket'
 import { updateStatus } from '../reducers/statusReducer'
-import { BsArrowCounterclockwise, BsArrowRepeat } from 'react-icons/bs'
+import { BsArrowCounterclockwise, BsArrowRepeat, BsCpuFill, BsDiagram2Fill, BsServer } from 'react-icons/bs'
 
 const handleReboot = () => socket.emit('RESTART_DEVICE')
 const handleReconnect = () => socket.emit('RECONNECT')
+
+const deviceStatusBadgeColors = {
+  'Connecting...': 'warning',
+  'Connected': 'success',
+}
+
+const DeviceStatusBadge = ({ name, icon, status, extraInfo }) => (
+  <h1>
+    <OverlayTrigger 
+      placement='bottom'
+      overlay={
+        <Tooltip>
+          <b>{name}</b><br/>
+          {extraInfo && <>{extraInfo}<br/></>}
+          {status}
+        </Tooltip>
+      } 
+    >
+      <Badge
+        bg={deviceStatusBadgeColors[status] || 'danger'}
+      >
+        {icon}
+      </Badge>
+    </OverlayTrigger>
+  </h1>
+)
 
 const DeviceStatus = () => {
   const status = useSelector(state => state.status)
@@ -24,24 +50,35 @@ const DeviceStatus = () => {
     <Card className='device-status'>
       <Card.Header><h2>Device status</h2></Card.Header>
       <Card.Body>
+        <h5>Connection status:</h5>
+        <Container>
+          <Row className='justify-content-center'>
+            <Col className='text-center'>
+              <DeviceStatusBadge
+                name='Backend (WebSocket)'
+                icon={<BsDiagram2Fill />}
+                status={status.socketConnectionStatus}
+              />
+            </Col>
+            <Col className='text-center'>
+              <DeviceStatusBadge
+                name='Database (MongoDB)'
+                icon={<BsServer />}
+                status={status.dbConnectionStatus}
+              />
+            </Col>
+            <Col className='text-center'>
+              <DeviceStatusBadge
+                name='MCU (Teensy 4.0)'
+                icon={<BsCpuFill />}
+                status={status.serialConnectionStatus}
+                extraInfo={`Path: ${status.serialPath}`}
+              />
+            </Col>
+          </Row>
+        </Container>
         <Table>
           <tbody>
-            <tr>
-              <td>Connection status:</td>
-              <td>
-                <Row>
-                  WebSocket: {status.socketConnectionStatus}
-                </Row>
-                <Row>
-                  Database: {status.dbConnectionStatus}
-                </Row>
-                <Row>
-                  Serial: {status.serialConnectionStatus}
-                  {' '}
-                  {status.serialPath && `(${status.serialPath})`}
-                </Row>
-              </td>
-            </tr>
             <tr>
               <td>Measurement in progress:</td>
               <td>{String(status.running)}</td>

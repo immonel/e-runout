@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   socketConnectionStatus: 'Connecting...',
-  serialConnectionStatus: 'Not available',
+  dbConnectionStatus: 'Connecting...',
+  serialConnectionStatus: 'Connecting...',
   serialPath: '',
   running: false,
   dataPoints: 0
