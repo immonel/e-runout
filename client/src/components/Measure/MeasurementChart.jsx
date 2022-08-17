@@ -38,7 +38,7 @@ const MeasurementChart = ({ measurement }) => {
         y: {
           title: {
             display: true,
-            text: 'Deviation from average (μm)'
+            text: 'Runout (μm)'
           }
         }
       },
