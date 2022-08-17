@@ -7,6 +7,8 @@ import StartStopButton from '../StartStopButton'
 
 const MeasurementControls = () => {
   const deviceConfig = useSelector(state => state.config)
+  const deviceStatus = useSelector(state => state.status)
+  const socketConnected = deviceStatus.socketConnectionStatus === 'Connected'
 
   const handleStartMeasurement = () => 
     socket.emit('START_MEASUREMENT')
@@ -60,6 +62,7 @@ const MeasurementControls = () => {
         <StartStopButton
           onClickStart={handleStartMeasurement}
           onClickStop={handleStopMeasurement}
+          disabled={!socketConnected}
         />
       </Card.Body>
     </Card>
