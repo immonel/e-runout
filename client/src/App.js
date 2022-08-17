@@ -26,7 +26,8 @@ const App = () => {
     socket.on('disconnect', reason => {
       dispatch(updateStatus({
         socketConnectionStatus: reason,
-        serialConnectionStatus: 'Not available'
+        serialConnectionStatus: 'Not available',
+        dbConnectionStatus: 'Not connected to server'
       }))
     })
 
