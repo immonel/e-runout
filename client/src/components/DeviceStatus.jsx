@@ -45,7 +45,7 @@ const DeviceStatus = () => {
   }, [ dispatch ])
 
   return (
-    <Card className='device-status'>
+    <Card className='mb-4'>
       <Card.Header>Connection status</Card.Header>
       <Card.Body>
         <Container className='my-3'>
@@ -78,7 +78,7 @@ const DeviceStatus = () => {
           </Row>
         </Container>
         <Button
-          className='status-buttons'
+          className='icon-button'
           onClick={handleReboot}
           disabled={!serialDeviceConnected}
         >

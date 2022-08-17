@@ -6,21 +6,14 @@
   padding: 0px;
 }
 
-.status-buttons {
+.icon-button {
   float: right;
   vertical-align: middle;
-}
-
-.device-status {
-  margin-bottom: 2em;
-}
-
-.status-button {
   display: flex;
   align-items: center;
 }
 
-.status-button > svg {
+.icon-button > svg {
   margin-right: 10px;
 }
 

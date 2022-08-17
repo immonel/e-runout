@@ -10,7 +10,7 @@ const StartStopButton = ({ onClickStart, onClickStop }) => {
 
   return (
     <Button
-      className='status-buttons'
+      className='icon-button'
       disabled={!socketConnected}
       variant={running ? 'danger' : 'success'}
       onClick={running ? onClickStop : onClickStart}
