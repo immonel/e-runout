@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux'
 import { createSelector } from '@reduxjs/toolkit'
 import MeasurementModal from '../components/Measure/MeasurementModal'
 import { BsArrowsAngleExpand } from 'react-icons/bs'
+import MeasurementStatus from '../components/Measure/MeasurementStatus'
 
 const selectAllMeasurements = state => state.measurements
 
@@ -38,6 +39,7 @@ const Measure = () => {
       <Row>
         <Col xs={12} md={12} lg={6} className='mb-4'>
           <DeviceStatus />
+          <MeasurementStatus />
           <MeasurementControls />
         </Col>
         <Col xs={12} md={12} lg={6}>

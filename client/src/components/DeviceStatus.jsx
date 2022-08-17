@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Badge, Button, Card, Col, Container, OverlayTrigger, Row, Table, Tooltip } from 'react-bootstrap'
+import { Badge, Button, Card, Col, Container, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { socket } from '../socket'
 import { updateStatus } from '../reducers/statusReducer'
@@ -36,7 +36,6 @@ const DeviceStatusBadge = ({ name, icon, status, extraInfo }) => (
 const DeviceStatus = () => {
   const status = useSelector(state => state.status)
   const dispatch = useDispatch()
-  const elapsedTime = new Date(Date.now() - status.startTime)
   const serialDeviceConnected = status.serialConnectionStatus === 'Connected'
 
   useEffect(() => {
@@ -47,10 +46,9 @@ const DeviceStatus = () => {
 
   return (
     <Card className='device-status'>
-      <Card.Header><h2>Device status</h2></Card.Header>
+      <Card.Header>Connection status</Card.Header>
       <Card.Body>
-        <h5>Connection status:</h5>
-        <Container>
+        <Container className='my-3'>
           <Row className='justify-content-center'>
             <Col className='text-center'>
               <DeviceStatusBadge
@@ -79,28 +77,6 @@ const DeviceStatus = () => {
             </Col>
           </Row>
         </Container>
-        <Table>
-          <tbody>
-            <tr>
-              <td>Measurement in progress:</td>
-              <td>{String(status.running)}</td>
-            </tr>
-            <tr>
-              <td>Time elapsed:</td>
-              <td>{status.running ? 
-                `${elapsedTime.getMinutes()}m ${elapsedTime.getSeconds()}s` : 
-                '0m 0s'}</td>
-            </tr>
-            <tr>
-              <td>Samples taken:</td>
-              {
-                status.dataPoints === 0 && status.running ?
-                  <td>Waiting for trigger...</td> :
-                  <td>{status.dataPoints} sample{status.dataPoints !== 1 && 's'}</td>
-              }
-            </tr>
-          </tbody>
-        </Table>
         <Button
           className='status-buttons'
           onClick={handleReboot}
