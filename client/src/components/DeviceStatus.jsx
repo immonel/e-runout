@@ -54,10 +54,11 @@ const DeviceStatus = () => {
           <Row className='justify-content-center'>
             <Col className='text-center'>
               <DeviceStatusBadge
-                name='Backend (WebSocket)'
+                name='WebSocket (Raspberry Pi)'
                 icon={<BsDiagram2Fill />}
                 status={status.socketConnectionStatus}
               />
+              <small>Backend</small>
             </Col>
             <Col className='text-center'>
               <DeviceStatusBadge
@@ -65,14 +66,16 @@ const DeviceStatus = () => {
                 icon={<BsServer />}
                 status={status.dbConnectionStatus}
               />
+              <small>Database</small>
             </Col>
             <Col className='text-center'>
               <DeviceStatusBadge
-                name='MCU (Teensy 4.0)'
+                name='Serial (Teensy)'
                 icon={<BsCpuFill />}
                 status={status.serialConnectionStatus}
                 extraInfo={`Path: ${status.serialPath}`}
               />
+              <small>MCU</small>
             </Col>
           </Row>
         </Container>
