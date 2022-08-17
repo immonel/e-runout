@@ -182,17 +182,10 @@ const handlers = (_io, _serial, _parser) => {
       broadcastMeasurements()
     })
 
-    socket.on('DELETE_MEASUREMENTS', async () => {
-      console.log('Socket IO: Received request to delete measurements!')
-      await db.deleteMeasurementsByType('measurement')
-      console.log(`Deleted all measurements of type 'measurement'`)
-      broadcastMeasurements()
-    })
-
-    socket.on('DELETE_CALIBRATIONS', async () => {
-      console.log('Socket IO: Received request to delete calibrations!')
-      await db.deleteMeasurementsByType('calibration')
-      console.log(`Deleted all measurements of type 'calibration'`)
+    socket.on('DELETE_MEASUREMENTS', async (type) => {
+      console.log(`Socket IO: Received request to delete all measurements of type ${type}!`)
+      await db.deleteMeasurementsByType(type)
+      console.log(`Deleted all measurements of type ${type}`)
       broadcastMeasurements()
     })
   })
