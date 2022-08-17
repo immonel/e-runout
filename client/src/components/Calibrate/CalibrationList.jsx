@@ -1,13 +1,11 @@
-import { Button, ListGroup } from 'react-bootstrap'
+import { ListGroup } from 'react-bootstrap'
 import { BsPlusLg } from 'react-icons/bs'
 import { socket } from '../../socket'
+import DeleteAllButton from '../DeleteAllButton'
 import Measurement from '../MeasurementListItem'
 
 const createNewCalibration = () =>
   socket.emit('CREATE_CALIBRATION')
-
-const deleteCalibrations = () =>
-  socket.emit('DELETE_CALIBRATIONS')
 
 const CalibrationList = ({ calibrations, selected, setSelected }) => (
   <div className='calibration-list'>
@@ -42,13 +40,7 @@ const CalibrationList = ({ calibrations, selected, setSelected }) => (
             </ListGroup.Item>
       }
     </ListGroup>
-    <Button
-      className="erase-button"
-      variant="danger"
-      onClick={deleteCalibrations}
-    >
-      Clear all calibrations
-    </Button>
+    <DeleteAllButton type='calibration' />
   </div>
 )
 

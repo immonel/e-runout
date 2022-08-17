@@ -1,6 +1,6 @@
-import { Button, ListGroup } from 'react-bootstrap'
+import { ListGroup } from 'react-bootstrap'
 import Measurement from '../MeasurementListItem'
-import { socket } from '../../socket'
+import DeleteAllButton from '../DeleteAllButton'
 
 const MeasurementList = ({ measurements, selected, setSelected }) => (
   <div className='measurement-list'>
@@ -27,13 +27,7 @@ const MeasurementList = ({ measurements, selected, setSelected }) => (
             </ListGroup.Item>
       }
     </ListGroup>
-    <Button
-      className="erase-button"
-      variant="danger"
-      onClick={() => socket.emit('DELETE_MEASUREMENTS')}
-    >
-      Clear all measurements
-    </Button>
+    <DeleteAllButton type='measurement' />
   </div>
 )
 
