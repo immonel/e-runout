@@ -1,14 +1,11 @@
 import React from 'react'
-import { ButtonGroup, Card, Table, ToggleButton } from 'react-bootstrap'
-import { BsPlayFill, BsStopFill } from 'react-icons/bs'
+import { Card, Table } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import { socket } from '../../socket'
 import SettingInput from '../SettingInput'
-
-
+import StartStopButton from '../StartStopButton'
 
 const MeasurementControls = () => {
-  const deviceStatus = useSelector(state => state.status)
   const deviceConfig = useSelector(state => state.config)
 
   const handleStartMeasurement = () => 
@@ -91,28 +88,10 @@ const MeasurementControls = () => {
             </tr>
           </tbody>
         </Table>
-        <ButtonGroup className='status-buttons'>
-            <ToggleButton
-              className='status-button'
-              disabled={deviceStatus.socketConnectionStatus !== "Connected"}
-              type='radio'
-              checked={deviceStatus.running}
-              variant="outline-success"
-              onClick={handleStartMeasurement}
-            >
-              <BsPlayFill />Start
-            </ToggleButton>
-            <ToggleButton
-              className='status-button'
-              disabled={deviceStatus.socketConnectionStatus !== "Connected"}
-              type='radio'
-              checked={!deviceStatus.running}
-              variant="outline-danger"
-              onClick={handleStopMeasurement}
-            >
-              <BsStopFill />Stop
-            </ToggleButton>
-          </ButtonGroup>
+        <StartStopButton
+          onClickStart={handleStartMeasurement}
+          onClickStop={handleStopMeasurement}
+        />
       </Card.Body>
     </Card>
   )

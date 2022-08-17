@@ -1,10 +1,10 @@
 import React from 'react'
 import { ButtonGroup, Card, Table, ToggleButton } from 'react-bootstrap'
-import { BsPlayFill, BsStopFill } from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
 import { setConfig } from '../../reducers/configReducer'
 import { socket } from '../../socket'
 import SettingInput from '../SettingInput'
+import StartStopButton from '../StartStopButton'
 
 const sampleModes = {
   'once': 'Sample once',
@@ -13,7 +13,6 @@ const sampleModes = {
 }
 
 const CalibrationControls = ({ selectedCalibration }) => {
-  const deviceStatus = useSelector(state => state.status)
   const deviceConfig = useSelector(state => state.config)
   const sampleMode = deviceConfig.sampleMode
   const dispatch = useDispatch()
@@ -58,28 +57,10 @@ const CalibrationControls = ({ selectedCalibration }) => {
             ))
           }
         </ButtonGroup>
-        <ButtonGroup className='status-buttons'>
-            <ToggleButton
-              className='status-button'
-              disabled={deviceStatus.socketConnectionStatus !== "Connected"}
-              type='radio'
-              checked={deviceStatus.running}
-              variant="outline-success"
-              onClick={() => addToCalibration(selectedCalibration)}
-            >
-              <BsPlayFill />Start
-            </ToggleButton>
-            <ToggleButton
-              className='status-button'
-              disabled={deviceStatus.socketConnectionStatus !== "Connected"}
-              type='radio'
-              checked={!deviceStatus.running}
-              variant="outline-danger"
-              onClick={handleStopMeasurement}
-            >
-              <BsStopFill />Stop
-            </ToggleButton>
-          </ButtonGroup>
+        <StartStopButton
+          onClickStart={() => addToCalibration(selectedCalibration)}
+          onClickStop={handleStopMeasurement}
+        />
       </Card.Body>
     </Card>
   )
