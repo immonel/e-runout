@@ -3,14 +3,14 @@ import { Chart as ChartJS } from 'chart.js/auto'
 import './App.css'
 import React, { useEffect } from 'react'
 import { Container, Tab, Tabs } from 'react-bootstrap'
-import Navbar from './components/Navbar'
 import { socket } from './socket'
-import Calibrate from './pages/Calibrate'
-import Measure from './pages/Measure'
 import { useDispatch } from 'react-redux'
 import { updateStatus } from './reducers/statusReducer'
 import { updateConfig } from './reducers/configReducer'
 import { updateMeasurements } from './reducers/measurementsReducer'
+import Navbar from './components/Navbar'
+import Calibrate from './components/Calibrate'
+import Measure from './components/Measure'
 
 const App = () => {
   const dispatch = useDispatch()

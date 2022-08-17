@@ -1,15 +1,15 @@
 import './Measure.css'
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Row } from 'react-bootstrap'
-import MeasurementList from '../components/Measure/MeasurementList'
-import Chart from '../components/Measure/MeasurementChart'
-import DeviceStatus from '../components/DeviceStatus'
-import MeasurementControls from '../components/Measure/MeasurementControls'
 import { useSelector } from 'react-redux'
 import { createSelector } from '@reduxjs/toolkit'
-import MeasurementModal from '../components/Measure/MeasurementModal'
 import { BsArrowsAngleExpand } from 'react-icons/bs'
-import MeasurementStatus from '../components/Measure/MeasurementStatus'
+import MeasurementList from './MeasurementList'
+import Chart from './MeasurementChart'
+import DeviceStatus from '../DeviceStatus'
+import MeasurementControls from './MeasurementControls'
+import MeasurementModal from './MeasurementModal'
+import MeasurementStatus from './MeasurementStatus'
 
 const selectAllMeasurements = state => state.measurements
 

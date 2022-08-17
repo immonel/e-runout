@@ -1,13 +1,13 @@
 import './Calibrate.css'
 import React, { useEffect, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
-import Chart from '../components/Calibrate/CalibrationChart'
-import DeviceStatus from '../components/DeviceStatus'
-import CalibrationControls from '../components/Calibrate/CalibrationControls'
 import { useSelector } from 'react-redux'
-import CalibrationStatus from '../components/Calibrate/CalibrationStatus'
-import CalibrationList from '../components/Calibrate/CalibrationList'
 import { createSelector } from '@reduxjs/toolkit'
+import Chart from './CalibrationChart'
+import DeviceStatus from '../DeviceStatus'
+import CalibrationControls from './CalibrationControls'
+import CalibrationStatus from './CalibrationStatus'
+import CalibrationList from './CalibrationList'
 
 const selectAllMeasurements = state => state.measurements
 
