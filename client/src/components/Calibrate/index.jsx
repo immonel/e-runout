@@ -22,6 +22,7 @@ const selectCalibrations = createSelector(
 const Calibrate = () => {
   const [ selected, setSelected ] = useState('')
   const calibrations = useSelector(state => selectCalibrations(state))
+  const calibrationById = (id) => calibrations.find(measurement => measurement.id === id)
 
   useEffect(() => {
     const selectedIndex = calibrations.length - 1
@@ -35,12 +36,12 @@ const Calibrate = () => {
       <Col xs={12} md={12} lg={6} className='mb-4'>
         <DeviceStatus />
         <CalibrationStatus />
-        <CalibrationControls selectedCalibration={selected} />
+        <CalibrationControls selectedCalibration={calibrationById(selected)} />
       </Col>
       <Col xs={12} md={12} lg={6}>     
         <h1>Calibrations</h1>
         <Chart 
-          measurement={calibrations.find(measurement => measurement.id === selected)} 
+          measurement={calibrationById(selected)} 
         />
         <CalibrationList 
           calibrations={calibrations} 

@@ -28,6 +28,12 @@ const SampleModeSelect = ({ deviceConfig }) => {
 
 const CalibrationControls = ({ selectedCalibration }) => {
   const deviceConfig = useSelector(state => state.config)
+  const deviceStatus = useSelector(state => state.status)
+  const socketConnected = deviceStatus.socketConnectionStatus === 'Connected'
+  const calibrationId = selectedCalibration ?
+    selectedCalibration.id : ''
+  const calibrationName = selectedCalibration ?
+    selectedCalibration.name : 'No selected calibration'
 
   const addToCalibration = (calibrationId) =>
     socket.emit('APPEND_CALIBRATION', calibrationId)
@@ -43,6 +49,10 @@ const CalibrationControls = ({ selectedCalibration }) => {
       <Card.Body>
         <Table>
           <tbody>
+            <tr>
+              <td>Selected calibration:</td>
+              <td>{calibrationName}</td>
+            </tr>
             <tr>
               <td>Sample mode:</td>
               <td>
@@ -63,8 +73,9 @@ const CalibrationControls = ({ selectedCalibration }) => {
           </tbody>
         </Table>
         <StartStopButton
-          onClickStart={() => addToCalibration(selectedCalibration)}
+          onClickStart={() => addToCalibration(calibrationId)}
           onClickStop={handleStopMeasurement}
+          disabled={!selectedCalibration || !socketConnected}
         />
       </Card.Body>
     </Card>
