@@ -1,5 +1,7 @@
 # e-runout
 
+![Screenshot of the app](documentation/img/measure-and-calibrate.png)
+
 This project is used to measure electrical runout by comparing measurements from touching probe sensors and Eddy current probes simultaneously.
 
 Technologies and frameworks used in the project include Docker, React, Redux, Bootstrap, Node.js, Express, MongoDB and Socket.IO.
