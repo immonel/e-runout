@@ -12,7 +12,7 @@ const CalibrationStatus = () => {
         Current calibration information
       </Card.Header>
       <Card.Body>
-        <Table className='table-borderless'>
+        <Table className='table-borderless mb-0'>
           <tbody>
             <tr>
               <td>Regression coefficient:</td>

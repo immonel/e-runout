@@ -8,6 +8,7 @@ import DeviceStatus from '../DeviceStatus'
 import CalibrationControls from './CalibrationControls'
 import CalibrationStatus from './CalibrationStatus'
 import CalibrationList from './CalibrationList'
+import MeasurementStatus from '../Measure/MeasurementStatus'
 
 const selectAllMeasurements = state => state.measurements
 
@@ -35,6 +36,7 @@ const Calibrate = () => {
     <Row>
       <Col xs={12} md={12} lg={6} className='mb-4'>
         <DeviceStatus />
+        <MeasurementStatus compact />
         <CalibrationStatus />
         <CalibrationControls selectedCalibration={calibrationById(selected)} />
       </Col>
