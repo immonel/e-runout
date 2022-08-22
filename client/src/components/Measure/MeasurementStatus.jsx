@@ -3,7 +3,7 @@ import { Card, Table } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import SettingInput from '../SettingInput'
 
-const MeasurementStatus = () => {
+const MeasurementStatus = ({ compact = false }) => {
   const status = useSelector(state => state.status)
   const deviceConfig = useSelector(state => state.config)
   const elapsedTime = new Date(Date.now() - status.startTime)
@@ -42,38 +42,44 @@ const MeasurementStatus = () => {
                   <td>{status.dataPoints} sample{status.dataPoints !== 1 && 's'}</td>
               }
             </tr>
-            <br />
-            <tr>
-              <td>TTL sensor name:</td>
-              <td>
-                <SettingInput
-                  isValid={(input) => input.length < 50}
-                  placeholder={deviceConfig.ttlSensorName}
-                  propertyName='ttlSensorName'
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>Eddy Current sensor name:</td>
-              <td>
-                <SettingInput
-                  isValid={(input) => input.length < 50}
-                  placeholder={deviceConfig.eddySensorName}
-                  propertyName='eddySensorName'
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>TTL sensor resolution (μm):</td>
-              <td>
-                <SettingInput
-                  isValid={(input) => !isNaN(input)}
-                  placeholder={deviceConfig.scaleFactor}
-                  propertyName='scaleFactor'
-                  type='number'
-                />
-              </td>
-            </tr>
+            {
+              !compact &&
+                <>
+                  <br />
+                  <tr>
+                    <td>TTL sensor name:</td>
+                    <td>
+                      <SettingInput
+                        isValid={(input) => input.length < 50}
+                        placeholder={deviceConfig.ttlSensorName}
+                        propertyName='ttlSensorName'
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Eddy Current sensor name:</td>
+                    <td>
+                      <SettingInput
+                        isValid={(input) => input.length < 50}
+                        placeholder={deviceConfig.eddySensorName}
+                        propertyName='eddySensorName'
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>TTL sensor resolution (μm):</td>
+                    <td>
+                      <SettingInput
+                        isValid={(input) => !isNaN(input)}
+                        placeholder={deviceConfig.scaleFactor}
+                        propertyName='scaleFactor'
+                        type='number'
+                      />
+                    </td>
+                  </tr>
+
+                </>
+            }
           </tbody>
         </Table>
       </Card.Body>
