@@ -3,7 +3,7 @@ info:
   title: E-runout WebSocket API
   version: '1.0.0'
   description: |
-    The Smartylighting Streetlights API allows you to remotely manage the city lights.
+    WebSocket API documentation for the e-runout project
 
 servers:
   server:
@@ -29,7 +29,6 @@ channels:
           - $ref: "#/components/messages/STOP_MEASUREMENT"
           - $ref: "#/components/messages/CREATE_CALIBRATION"
           - $ref: "#/components/messages/APPEND_CALIBRATION"
-          - $ref: "#/components/messages/DELETE_CALIBRATIONS"
           - $ref: "#/components/messages/DELETE_MEASUREMENTS"
           - $ref: "#/components/messages/DELETE_MEASUREMENT"
           - $ref: "#/components/messages/RESTART_DEVICE"
@@ -99,13 +98,11 @@ components:
       payload:
         $ref: "#/components/schemas/measurementId"
 
-    DELETE_CALIBRATIONS:
-      title: DELETE_CALIBRATIONS
-      summary: Delete all saved 'calibration' type measurements
-
     DELETE_MEASUREMENTS:
       title: DELETE_MEASUREMENTS
       summary: Delete all saved 'measurement' type measurements
+      payload:
+        $ref: "#/components/schemas/measurementType"
 
     DELETE_MEASUREMENT:
       title: DELETE_MEASUREMENT
@@ -129,6 +126,13 @@ components:
     measurementId:
       type: string
       description: ID of the measurement
+
+    measurementType:
+      type: string
+      enum:
+        - 'measurement'
+        - 'calibration'
+      description: Type of the measurement
 
     status:
       type: object
@@ -181,11 +185,7 @@ components:
           type: string
           description: Name of the measurement
         type:
-          type: string
-          enum:
-            - measurement
-            - calibration
-          description: Type of the measurement
+          $ref: "#/components/schemas/measurementType"
         created:
           type: string
           description: Time and date of creation
