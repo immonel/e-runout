@@ -41,6 +41,8 @@ $ mv .example.env .env
 $ docker-compose up
 ```
 
+**NOTE:** Please keep in mind that buiding the `erunout` Docker image on Raspberry Pi will take a LONG time (~1h).
+
 The application creates a Wi-Fi access point with environment variables `SSID` and `PASSPHRASE` given in the `.env` file.
 
 IP address for the application is `10.0.10.1` by default and can be accessed after connecting to the WLAN network.
